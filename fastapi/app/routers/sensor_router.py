@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from database import get_db
 from dtos.sensor_dto import (
@@ -13,13 +13,17 @@ from services.sensor_service import add_sensor_service, get_sensor_list_service
 sensor_router = APIRouter()
 
 
-@sensor_router.post("/add", response_model=BaseResponseDTO[SensorDTO])
+@sensor_router.post("/", response_model=BaseResponseDTO[SensorDTO])
 def add_sensor_route(dto: AddSensorRequestDTO, db: Session = Depends(get_db)):
     return add_sensor_service(dto, db)
 
 
-@sensor_router.post("/list", response_model=GetSensorListResponseDTO)
+@sensor_router.get("/", response_model=GetSensorListResponseDTO)
 def get_sensor_list_route(
-    dto: GetSensorListRequestDTO, db: Session = Depends(get_db)
+    group_id: int = Query(None),
+    crop_id: int = Query(None),
+    db: Session = Depends(get_db),
 ):
-    return get_sensor_list_service(dto, db)
+    return get_sensor_list_service(
+        GetSensorListRequestDTO(group_id=group_id, crop_id=crop_id), db
+    )

@@ -32,7 +32,7 @@ async def validation_exception_handler(
         content=BaseResponseDTO(
             success=False,
             code=400,
-            message="parameter error",
+            message="wrong parameter format",
             data=None,
         ).model_dump(),
     )

@@ -3,12 +3,6 @@ from pydantic import BaseModel
 from dtos.base_dto import BaseResponseDTO
 
 
-class AddSensorRequestDTO(BaseModel):
-    crop_id: int
-    name: str
-    type: str
-
-
 class SensorDTO(BaseModel):
     sensor_id: int
     crop_id: int
@@ -17,6 +11,12 @@ class SensorDTO(BaseModel):
     type: str
 
     model_config = {"from_attributes": True}
+
+
+class AddSensorRequestDTO(BaseModel):
+    crop_id: int
+    name: str
+    type: str
 
 
 class GetSensorListRequestDTO(BaseModel):

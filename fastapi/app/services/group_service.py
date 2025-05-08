@@ -6,7 +6,6 @@ from dtos.group_dto import (
     AddGroupRequestDTO,
     GetGroupListRequestDTO,
     GetGroupListResponseDTO,
-    GetGroupDetailRequestDTO,
     GetGroupDetailResponseDTO,
     GroupDTO,
     GroupDetailDTO,
@@ -17,8 +16,9 @@ from exception import CustomException
 
 
 def get_group_detail_service(
-    dto: GetGroupDetailRequestDTO, db: Session
+    group_id: int, db: Session
 ) -> GetGroupDetailResponseDTO:
+    ...
     try:
         group = (
             db.query(Group)
@@ -27,7 +27,7 @@ def get_group_detail_service(
                 joinedload(Group.crops).joinedload(Crop.sensors),
                 joinedload(Group.crops).joinedload(Crop.schedules),
             )
-            .filter(Group.group_id == dto.group_id)
+            .filter(Group.group_id == group_id)
             .first()
         )
 
@@ -55,9 +55,7 @@ def add_group_service(
         db.commit()
         db.refresh(group)
 
-        return get_group_detail_service(
-            GetGroupDetailRequestDTO(group_id=group.group_id), db
-        )
+        return get_group_detail_service(group.group_id, db)
     except SQLAlchemyError as e:
         db.rollback()
         raise CustomException(1400, f"DB error: {str(e)}")

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from database import get_db
 from dtos.schedule_dto import (
@@ -16,15 +16,19 @@ from services.schedule_service import (
 schedule_router = APIRouter()
 
 
-@schedule_router.post("/add", response_model=BaseResponseDTO[ScheduleDTO])
+@schedule_router.post("/", response_model=BaseResponseDTO[ScheduleDTO])
 def add_schedule_route(
     dto: AddScheduleRequestDTO, db: Session = Depends(get_db)
 ):
     return add_schedule_service(dto, db)
 
 
-@schedule_router.post("/list", response_model=GetScheduleListResponseDTO)
+@schedule_router.get("/", response_model=GetScheduleListResponseDTO)
 def get_schedule_list_route(
-    dto: GetScheduleListRequestDTO, db: Session = Depends(get_db)
+    group_id: int = Query(None),
+    crop_id: int = Query(None),
+    db: Session = Depends(get_db),
 ):
-    return get_schedule_list_service(dto, db)
+    return get_schedule_list_service(
+        GetScheduleListRequestDTO(group_id=group_id, crop_id=crop_id), db
+    )

@@ -5,7 +5,6 @@ from sqlalchemy.orm import joinedload
 
 from dtos.crop_dto import (
     AddCropRequestDTO,
-    GetCropDetailRequestDTO,
     GetCropDetailResponseDTO,
     GetCropListRequestDTO,
     GetCropListResponseDTO,
@@ -17,7 +16,7 @@ from exception import CustomException
 
 
 def get_crop_detail_service(
-    dto: GetCropDetailRequestDTO, db: Session
+    crop_id: int, db: Session
 ) -> GetCropDetailResponseDTO:
     try:
         crop = (
@@ -27,7 +26,7 @@ def get_crop_detail_service(
                 joinedload(Crop.schedules),
                 joinedload(Crop.sensors),
             )
-            .filter(Crop.crop_id == dto.crop_id)
+            .filter(Crop.crop_id == crop_id)
             .first()
         )
 
@@ -55,9 +54,7 @@ def add_crop_service(
         db.commit()
         db.refresh(crop)
 
-        return get_crop_detail_service(
-            GetCropDetailRequestDTO(crop_id=crop.crop_id), db
-        )
+        return get_crop_detail_service(crop.crop_id, db)
 
     except SQLAlchemyError as e:
         db.rollback()
