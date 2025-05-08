@@ -11,8 +11,8 @@ class Sensor(Base):
     crop_id = Column(Integer, ForeignKey("crop.crop_id"))
     group_id = Column(Integer, ForeignKey("group.group_id"))
     name = Column(String(256))
-    value = Column(String(256))
-    image = Column(String(256))
+    value = Column(String(256), default="NaN")
+    type = Column(String(256))
 
     crop = relationship("Crop")
     group = relationship("Group")

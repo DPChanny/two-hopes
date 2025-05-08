@@ -4,15 +4,17 @@ from dtos.schedule_dto import (
     AddScheduleRequestDTO,
     GetScheduleListRequestDTO,
     GetScheduleListResponseDTO,
-    ScheduleDTO,
 )
+from entities.crop import Crop
 
 
 def add_schedule_service(dto: AddScheduleRequestDTO, db: Session):
+    crop = db.query(Crop).filter(Crop.crop_id == dto.crop_id).first()
+
     db.add(
         Schedule(
             crop_id=dto.crop_id,
-            group_id=dto.group_id,
+            group_id=crop.group_id,
             start_time=dto.start_time,
             end_time=dto.end_time,
             user_name=dto.user_name,

@@ -7,15 +7,18 @@ from dtos.sensor_dto import (
     GetSensorListResponseDTO,
 )
 from entities.sensor import Sensor
+from entities.crop import Crop
 
 
 def add_sensor_service(dto: AddSensorRequestDTO, db: Session):
+    crop = db.query(Crop).filter(Crop.crop_id == dto.crop_id).first()
+
     db.add(
         Sensor(
             crop_id=dto.crop_id,
-            group_id=dto.group_id,
+            group_id=crop.group_id,
             name=dto.name,
-            image=dto.image,
+            type=dto.type,
         )
     )
     db.commit()

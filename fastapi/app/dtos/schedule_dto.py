@@ -4,7 +4,6 @@ from typing import Optional
 
 class AddScheduleRequestDTO(BaseModel):
     crop_id: int
-    group_id: int
     start_time: str
     end_time: str
     user_name: str

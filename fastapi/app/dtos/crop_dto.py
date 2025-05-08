@@ -13,6 +13,7 @@ class CropDTO(BaseModel):
     group_id: int
     name: str
     type: str
+    harvest: bool
 
     model_config = {"from_attributes": True}
 

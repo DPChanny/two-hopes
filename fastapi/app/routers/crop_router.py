@@ -20,4 +20,4 @@ def add_crop_route(dto: AddCropRequestDTO, db: Session = Depends(get_db)):
 def get_crop_list_route(
     dto: GetCropListRequestDTO, db: Session = Depends(get_db)
 ):
-    return get_crop_list_service(db)
+    return get_crop_list_service(dto, db)

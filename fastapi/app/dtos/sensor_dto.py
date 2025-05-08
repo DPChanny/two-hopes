@@ -4,17 +4,17 @@ from pydantic import BaseModel
 
 class AddSensorRequestDTO(BaseModel):
     crop_id: int
-    group_id: int
     name: str
-    image: str
+    type: str
 
 
 class SensorDTO(BaseModel):
     sensor_id: int
     crop_id: int
     group_id: int
+    value: str
     name: str
-    image: str
+    type: str
 
     model_config = {"from_attributes": True}
 
