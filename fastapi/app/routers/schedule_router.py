@@ -21,7 +21,7 @@ def add_schedule_route(
     add_schedule_service(dto, db)
 
 
-@schedule_router.get(
+@schedule_router.post(
     "/schedule/list", response_model=GetScheduleListResponseDTO
 )
 def get_schedule_list_route(

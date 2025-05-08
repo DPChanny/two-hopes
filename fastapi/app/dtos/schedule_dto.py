@@ -18,8 +18,7 @@ class ScheduleDTO(BaseModel):
     end_time: str
     user_name: str
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class GetScheduleListRequestDTO(BaseModel):

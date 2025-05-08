@@ -10,7 +10,6 @@ class Crop(Base):
     crop_id = Column(Integer, primary_key=True, autoincrement=True)
     group_id = Column(Integer, ForeignKey("group.group_id"))
     name = Column(String(256))
-    humid = Column(String(256))
     type = Column(String(256))
 
     group = relationship("Group")

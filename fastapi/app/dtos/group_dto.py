@@ -8,12 +8,11 @@ class AddGroupRequestDTO(BaseModel):
 
 
 class GroupDTO(BaseModel):
-    id: int
+    group_id: int
     name: str
     location: str
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class GetGrouListRequestDTO(BaseModel):

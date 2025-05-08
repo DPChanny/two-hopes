@@ -16,7 +16,7 @@ def add_group_route(dto: AddGroupRequestDTO, db: Session = Depends(get_db)):
     add_group_service(dto, db)
 
 
-@group_router.get("/group/list", response_model=GetGroupListResponseDTO)
+@group_router.post("/group/list", response_model=GetGroupListResponseDTO)
 def get_group_list_route(
     dto: GetGrouListRequestDTO, db: Session = Depends(get_db)
 ):

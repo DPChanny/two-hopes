@@ -16,6 +16,8 @@ class SensorDTO(BaseModel):
     name: str
     image: str
 
+    model_config = {"from_attributes": True}
+
 
 class GetSensorListResponseDTO(BaseModel):
     sensors: list[SensorDTO]

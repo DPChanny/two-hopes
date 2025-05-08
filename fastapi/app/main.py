@@ -9,7 +9,7 @@ from routers.sensor_router import sensor_router
 app = FastAPI()
 
 
-@app.startup()
+@app.on_event("startup")
 def on_startup():
     database.init_engine()
     database.Base.metadata.create_all(bind=database.engine)

@@ -16,7 +16,7 @@ def add_sensor_route(dto: AddSensorRequestDTO, db: Session = Depends(get_db)):
     add_sensor_service(dto, db)
 
 
-@sensor_router.get("/sensor/list", response_model=GetSensorListResponseDTO)
+@sensor_router.post("/sensor/list", response_model=GetSensorListResponseDTO)
 def get_sensor_list_route(
     dto: GetSensorListRequestDTO = Depends(), db: Session = Depends(get_db)
 ):

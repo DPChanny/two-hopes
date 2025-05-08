@@ -1,7 +1,11 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 
-from dtos.crop_dto import AddCropRequestDTO, GetCropListResponseDTO
+from dtos.crop_dto import (
+    AddCropRequestDTO,
+    GetCropListRequestDTO,
+    GetCropListResponseDTO,
+)
 from entities.crop import Crop
 
 
@@ -14,5 +18,12 @@ def add_crop_service(dto: AddCropRequestDTO, db: Session):
     db.commit()
 
 
-def get_crop_list_service(db: Session) -> GetCropListResponseDTO:
-    return GetCropListResponseDTO(crops=db.query(Crop).all())
+def get_crop_list_service(
+    dto: GetCropListRequestDTO, db: Session
+) -> GetCropListResponseDTO:
+    query = db.query(Crop)
+
+    if dto.name:
+        query = query.filter(Crop.name.contains(dto.name))
+
+    return GetCropListResponseDTO(crops=query.all())
