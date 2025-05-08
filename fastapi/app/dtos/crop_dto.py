@@ -15,6 +15,9 @@ class CropDTO(BaseModel):
     humid: str
     type: str
 
+    class Config:
+        orm_mode = True
+
 
 class GetCropListRequestDTO(BaseModel):
     group_id: int
