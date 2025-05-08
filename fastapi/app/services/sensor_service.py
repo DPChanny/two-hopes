@@ -1,11 +1,15 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 
-from dtos.sensor_dto import AddSensorDTO
+from dtos.sensor_dto import (
+    AddSensorRequestDTO,
+    GetSensorListRequestDTO,
+    GetSensorListResponseDTO,
+)
 from entities.sensor import Sensor
 
 
-def add_crop_service(dto: AddSensorDTO, db: Session):
+def add_sensor_service(dto: AddSensorRequestDTO, db: Session):
     db.add(
         Sensor(
             crop_id=dto.crop_id,
@@ -15,3 +19,16 @@ def add_crop_service(dto: AddSensorDTO, db: Session):
         )
     )
     db.commit()
+
+
+def get_sensor_list_service(
+    dto: GetSensorListRequestDTO, db: Session
+) -> GetSensorListResponseDTO:
+    query = db.query(Sensor)
+
+    if dto.group_id:
+        query = query.filter(Sensor.group_id == dto.group_id)
+    if dto.crop_id:
+        query = query.filter(Sensor.crop_id == dto.crop_id)
+
+    return GetSensorListResponseDTO(sensors=query.all())

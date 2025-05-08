@@ -1,7 +1,8 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
-class AddSensorDTO(BaseModel):
+class AddSensorRequestDTO(BaseModel):
     crop_id: int
     group_id: int
     name: str
@@ -21,4 +22,5 @@ class GetSensorListResponseDTO(BaseModel):
 
 
 class GetSensorListRequestDTO(BaseModel):
-    crop_id: int
+    group_id: Optional[int] = None
+    crop_id: Optional[int] = None
