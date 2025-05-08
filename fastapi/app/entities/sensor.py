@@ -13,4 +13,4 @@ class Sensor(Base):
     value = Column(String(256), default="NaN")
     type = Column(String(256))
 
-    crop = relationship("Crop")
+    crop = relationship("Crop", back_populates="sensors")

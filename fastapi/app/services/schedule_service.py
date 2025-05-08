@@ -1,35 +1,74 @@
+from pydantic import ValidationError
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+
 from entities.schedule import Schedule
+from entities.crop import Crop
 from dtos.schedule_dto import (
     AddScheduleRequestDTO,
     GetScheduleListRequestDTO,
     GetScheduleListResponseDTO,
+    ScheduleDTO,
 )
-from entities.crop import Crop
+from dtos.base_dto import BaseResponseDTO
+from exception import CustomException
 
 
-def add_schedule_service(dto: AddScheduleRequestDTO, db: Session):
-    crop = db.query(Crop).filter(Crop.crop_id == dto.crop_id).first()
+def add_schedule_service(
+    dto: AddScheduleRequestDTO, db: Session
+) -> BaseResponseDTO[ScheduleDTO]:
+    try:
+        crop = db.query(Crop).filter(Crop.crop_id == dto.crop_id).first()
+        if not crop:
+            raise CustomException(404, "Crop not found.")
 
-    db.add(
-        Schedule(
+        schedule = Schedule(
             crop_id=dto.crop_id,
             start_time=dto.start_time,
             end_time=dto.end_time,
             user_name=dto.user_name,
         )
-    )
-    db.commit()
+        db.add(schedule)
+        db.commit()
+        db.refresh(schedule)
+
+        return BaseResponseDTO(
+            success=True,
+            code=201,
+            message="Schedule successfully added.",
+            data=ScheduleDTO.model_validate(schedule),
+        )
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise CustomException(1400, f"DB error: {str(e)}")
+    except ValidationError as e:
+        raise CustomException(1401, f"Validation error: {str(e)}")
 
 
 def get_schedule_list_service(
     dto: GetScheduleListRequestDTO, db: Session
 ) -> GetScheduleListResponseDTO:
-    query = db.query(Schedule).join(Schedule.crop)
+    try:
+        query = db.query(Schedule).join(Schedule.crop)
 
-    if dto.group_id:
-        query = query.filter(Crop.group_id == dto.group_id)
-    if dto.crop_id:
-        query = query.filter(Schedule.crop_id == dto.crop_id)
+        if dto.group_id:
+            query = query.filter(Crop.group_id == dto.group_id)
+        if dto.crop_id:
+            query = query.filter(Schedule.crop_id == dto.crop_id)
 
-    return GetScheduleListResponseDTO(schedules=query.all())
+        schedule_entities = query.all()
+        schedule_dtos = [
+            ScheduleDTO.model_validate(s) for s in schedule_entities
+        ]
+
+        return GetScheduleListResponseDTO(
+            success=True,
+            code=200,
+            message="Schedule list retrieved successfully.",
+            data=schedule_dtos,
+        )
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise CustomException(1400, f"DB error: {str(e)}")
+    except ValidationError as e:
+        raise CustomException(1401, f"Validation error: {str(e)}")

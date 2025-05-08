@@ -1,5 +1,6 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
+from dtos.base_dto import BaseResponseDTO
 
 
 class AddSensorRequestDTO(BaseModel):
@@ -18,10 +19,10 @@ class SensorDTO(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class GetSensorListResponseDTO(BaseModel):
-    sensors: list[SensorDTO]
-
-
 class GetSensorListRequestDTO(BaseModel):
     group_id: Optional[int] = None
     crop_id: Optional[int] = None
+
+
+class GetSensorListResponseDTO(BaseResponseDTO[List[SensorDTO]]):
+    pass

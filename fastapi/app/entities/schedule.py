@@ -13,4 +13,4 @@ class Schedule(Base):
     end_time = Column(String(256))
     user_name = Column(String(256))
 
-    crop = relationship("Crop")
+    crop = relationship("Crop", back_populates="schedules")

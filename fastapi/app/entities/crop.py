@@ -13,4 +13,8 @@ class Crop(Base):
     type = Column(String(256))
     harvest = Column(Boolean, default=False)
 
-    group = relationship("Group")
+    group = relationship("Group", back_populates="crops")
+
+    posts = relationship("Post", back_populates="crop")
+    schedules = relationship("Schedule", back_populates="crop")
+    sensors = relationship("Sensor", back_populates="crop")

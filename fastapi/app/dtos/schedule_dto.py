@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
+from dtos.base_dto import BaseResponseDTO
 
 
 class AddScheduleRequestDTO(BaseModel):
@@ -24,5 +25,5 @@ class GetScheduleListRequestDTO(BaseModel):
     crop_id: Optional[int] = None
 
 
-class GetScheduleListResponseDTO(BaseModel):
-    schedules: list[ScheduleDTO]
+class GetScheduleListResponseDTO(BaseResponseDTO[List[ScheduleDTO]]):
+    pass
