@@ -12,7 +12,6 @@ class AddScheduleRequestDTO(BaseModel):
 class ScheduleDTO(BaseModel):
     schedule_id: int
     crop_id: int
-    group_id: int
     start_time: str
     end_time: str
     user_name: str

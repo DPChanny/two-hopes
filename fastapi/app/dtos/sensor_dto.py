@@ -11,7 +11,6 @@ class AddSensorRequestDTO(BaseModel):
 class SensorDTO(BaseModel):
     sensor_id: int
     crop_id: int
-    group_id: int
     value: str
     name: str
     type: str

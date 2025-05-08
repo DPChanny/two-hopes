@@ -16,7 +16,6 @@ def add_sensor_service(dto: AddSensorRequestDTO, db: Session):
     db.add(
         Sensor(
             crop_id=dto.crop_id,
-            group_id=crop.group_id,
             name=dto.name,
             type=dto.type,
         )
@@ -27,10 +26,10 @@ def add_sensor_service(dto: AddSensorRequestDTO, db: Session):
 def get_sensor_list_service(
     dto: GetSensorListRequestDTO, db: Session
 ) -> GetSensorListResponseDTO:
-    query = db.query(Sensor)
+    query = db.query(Sensor).join(Sensor.crop)
 
     if dto.group_id:
-        query = query.filter(Sensor.group_id == dto.group_id)
+        query = query.filter(Crop.group_id == dto.group_id)
     if dto.crop_id:
         query = query.filter(Sensor.crop_id == dto.crop_id)
 
