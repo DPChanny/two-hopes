@@ -1,0 +1,18 @@
+from sqlalchemy import Column, ForeignKey, String, Integer
+from sqlalchemy.orm import relationship
+
+from database import Base
+
+
+class Sensor(Base):
+    __tablename__ = "sensor"
+
+    sensor_id = Column(Integer, primary_key=True, autoincrement=True)
+    crop_id = Column(Integer, ForeignKey("crop.crop_id"))
+    group_id = Column(Integer, ForeignKey("group.group_id"))
+    name = Column(String(256))
+    value = Column(String(256))
+    image = Column(String(256))
+
+    crop = relationship("Crop")
+    group = relationship("Group")

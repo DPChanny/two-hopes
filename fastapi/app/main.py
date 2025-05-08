@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import database
 
-from routers.test_router import test_router
+from routers.group_router import group_router
 
 app = FastAPI()
 
@@ -11,4 +11,4 @@ def on_startup():
     database.init_engine()
 
 
-app.include_router(test_router, prefix="/api")
+app.include_router(group_router, prefix="/api")
