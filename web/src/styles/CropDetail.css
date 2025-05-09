@@ -1,0 +1,60 @@
+.crop-detail-layout {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  align-items: flex-start;
+}
+
+/* 왼쪽: 센서 카드 묶음 */
+.crop-status-section {
+  width: 300px;
+  height: 64px;
+  border-radius: 10px;
+  background: linear-gradient(
+    180deg,
+    #a4bf7d 0%,
+    rgba(164, 191, 125, 0.8) 100%
+  );
+  border: 10px solid transparent;
+
+  border-radius: 10px;
+  display: flex;
+  box-sizing: border-box;
+}
+
+/* 가운데: 그룹 정보 + 포스트 */
+.crop-main-section {
+  flex: 1;
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 오른쪽: 스케줄러 */
+.crop-scheduler-section {
+  width: 250px;
+  background-color: #f4f4f4;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.status-card {
+  width: 300px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: linear-gradient(
+    180deg,
+    #a4bf7d 0%,
+    rgba(164, 191, 125, 0.8) 100%
+  );
+  color: #333;
+  font-weight: 500;
+  font-size: 16px;
+}
