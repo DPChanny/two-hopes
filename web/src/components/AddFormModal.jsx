@@ -60,15 +60,27 @@ const AddFormModal = ({
         if (onSensorAdded) onSensorAdded();
         onClose();
       } else if (type === "post") {
-        // ✅ [추가] 게시글 작성 처리
         const payload = {
           crop_id: cropId,
           content: postContent,
-          image_url: imageUrl,
           author: author,
         };
         const res = await api.post("/api/post/", payload);
-        if (onPostAdded) onPostAdded(res.data.data); // 부모에게 새 게시글 전달
+        await api.put(res.data.data.image_url, imageUrl, {
+          headers: {
+            "Content-Type": "image/jpeg",
+          },
+        });
+        console.log(res.data.data.image_url);
+        console.log(res.data.data.image_url.split("?"));
+        const payload2 = {
+          image_url: res.data.data.image_url.split("?")[0],
+        };
+        const res2 = await api.patch(
+          `/api/post/${res.data.data.post_id}`,
+          payload2
+        );
+        if (onPostAdded) onPostAdded(res2.data.data); // 부모에게 새 게시글 전달
         onClose();
       }
     } catch (error) {
@@ -158,10 +170,9 @@ const AddFormModal = ({
                 className="form-input"
               />
               <input
-                type="text"
-                placeholder="이미지 URL"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
+                type="file"
+                accept=".jpg,image/jpeg"
+                onChange={(e) => setImageUrl(e.target.files[0])}
                 className="form-input"
               />
               <input
