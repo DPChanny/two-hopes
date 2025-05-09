@@ -75,53 +75,62 @@ const AddFormModal = ({
               : "센서 추가"
           }
           onSubmit={handleSubmit}
-          buttonLabel="추가"
         >
           {type === "group" ? (
-            <>
+            <div className="form-content-frame">
+              <label className="form-label">‣ 그룹 이름</label>
               <input
                 type="text"
                 placeholder="그룹 이름"
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
+                className="form-input"
               />
+              <label className="form-label">‣ 위치</label>
               <input
                 type="text"
                 placeholder="위치"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
+                className="form-input"
               />
-            </>
+            </div>
           ) : type === "crop" ? (
-            <>
+            <div className="form-content-frame">
+              <label className="form-label">‣ 작물 이름</label>
               <input
                 type="text"
                 placeholder="작물 이름"
                 value={cropName}
                 onChange={(e) => setCropName(e.target.value)}
+                className="form-input"
               />
+              <label className="form-label">‣ 작물 종류</label>
               <CustomSelect
-                className="crop-type-select"
+                className="form-select"
                 placeholder="작물 종류"
                 value={cropType}
                 onChange={(selectedOption) => setCropType(selectedOption)}
               />
-            </>
+            </div>
           ) : (
-            <>
+            <div className="form-content-frame">
+              <label className="form-label">‣ 센서 이름</label>
               <input
                 type="text"
                 placeholder="센서 이름"
                 value={sensorName}
                 onChange={(e) => setSensorName(e.target.value)}
+                className="form-input"
               />
+              <label className="form-label">‣ 센서 타입</label>
               <SensorSelect
-                className="sensor-type-select"
+                className="form-select"
                 placeholder="센서 타입"
                 value={sensorType}
                 onChange={(selectedOption) => setSensorType(selectedOption)}
               />
-            </>
+            </div>
           )}
         </AddForm>
       </div>

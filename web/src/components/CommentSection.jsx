@@ -1,6 +1,7 @@
-// CommentSection.jsx
 import React, { useEffect, useState } from "react";
 import api from "../axiosConfig";
+import { FaRegCommentAlt } from "react-icons/fa";
+import "../styles/CommentSection.css";
 
 const CommentSection = ({ postId }) => {
   const [comments, setComments] = useState([]);
@@ -31,17 +32,18 @@ const CommentSection = ({ postId }) => {
   };
 
   return (
-    <div>
+    <div className="commnet-section">
       <div
         onClick={() => setShowComments((prev) => !prev)}
         style={{ cursor: "pointer" }}
+        className="comment-icon"
       >
-        💬 댓글
+        <FaRegCommentAlt size={35} />
       </div>
 
       {showComments && (
-        <div className="comment-section">
-          <form onSubmit={handleSubmit}>
+        <div className="comment-content">
+          <form onSubmit={handleSubmit} className="comment-input">
             <input
               type="text"
               placeholder="댓글 입력"
@@ -53,8 +55,10 @@ const CommentSection = ({ postId }) => {
           <div className="comments-list">
             {comments.length > 0 ? (
               comments.map((c, index) => (
-                <div key={c.comment_id}>
-                  <b>익명{index + 1}</b>: {c.content}
+                <div key={c.comment_id} className="comments-list-item">
+                  <b>익명{index + 1}</b>
+                  <div className="vertical-line" />
+                  {c.content}
                 </div>
               ))
             ) : (

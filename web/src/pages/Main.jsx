@@ -15,26 +15,6 @@ const Main = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
 
-  /*useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const res = await api.get("/api/group/", {
-          params: searchQuery ? { name: searchQuery } : {},
-        });
-        setGroups(res.data.data);
-      } catch (error) {
-        console.error("그룹 목록 불러오기 실패:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGroups();
-  }, [searchQuery]);
-
-  if (loading) return <p>로딩 중...</p>;*/
-
-  // ✅ [🔧 수정 1] fetchGroups를 외부에서도 호출 가능하게 함수로 분리
   const fetchGroups = async () => {
     try {
       const res = await api.get("/api/group/", {
@@ -48,9 +28,8 @@ const Main = () => {
     }
   };
 
-  // ✅ [🔧 수정 2] useEffect에서 위 함수를 사용
   useEffect(() => {
-    fetchGroups(); // ✅ 함수 호출
+    fetchGroups();
   }, [searchQuery]);
 
   if (loading) return <p>로딩 중...</p>;
@@ -62,7 +41,7 @@ const Main = () => {
         value={searchQuery}
         onChange={setSearchQuery}
         onSearch={() => {
-          setLoading(true); // 검색 시 데이터 리로딩 유도
+          setLoading(true);
         }}
       />
       <div className="group-container">

@@ -13,12 +13,11 @@ const SensorSelect = ({ className, placeholder, value, onChange }) => {
     control: (base) => ({
       ...base,
       backgroundColor: "#fff",
-      width: "128px",
+      width: "396px",
       height: "48px",
-      border: "none",
-      borderRadius: "20px",
-      paddingRight: "8px",
-      boxSizing: "border-box",
+      border: "1px solid #ccc",
+      borderRadius: "10px",
+      paddingLeft: "10px",
     }),
     placeholder: (base) => ({
       ...base,
@@ -29,7 +28,6 @@ const SensorSelect = ({ className, placeholder, value, onChange }) => {
       padding: "0px",
       lineHeight: "48px",
       width: "100%",
-      textAlign: "right",
     }),
     singleValue: (base) => ({
       ...base,
@@ -39,7 +37,6 @@ const SensorSelect = ({ className, placeholder, value, onChange }) => {
       padding: "0px",
       lineHeight: "48px",
       width: "100%",
-      textAlign: "right",
     }),
     input: (base) => ({
       ...base,
