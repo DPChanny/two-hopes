@@ -5,6 +5,7 @@ import Welcome from "./pages/Welcome";
 import GroupDetail from "./pages/GroupDetail";
 import CropDetail from "./pages/CropDetail";
 import Scheduler from "./components/Scheduler";
+import AddForm from "./components/AddForm";
 
 function App() {
   return (

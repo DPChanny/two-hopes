@@ -1,73 +1,139 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { groups, cropPosts } from "../data/dummyData";
 import { BiMap } from "react-icons/bi";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { FaUserCircle } from "react-icons/fa";
 import Scheduler from "../components/Scheduler";
 import StatusCard from "../components/StatusCard";
+import api from "../axiosConfig.js";
+import "../styles/CropDetail.css";
+import AddBtn from "../components/AddBtn";
+import AddFormModal from "../components/AddFormModal.jsx";
 
 const CropDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const cropId = parseInt(id);
-  const posts = cropPosts.filter((post) => post.cropId === cropId);
+  const [crop, setCrop] = useState(null);
+  const [error, setError] = useState("");
+  const [groupLocation, setGroupLocation] = useState("");
+  const [groupName, setGroupName] = useState("");
+  const [sensors, setSensors] = useState([]);
+  const [showAddModal, setShowAddModal] = useState(false);
 
-  const mockSensorData = [
-    { label: "온도", value: "36도" },
-    { label: "습도", value: "좋음" },
-    { label: "일조량", value: "안좋음" },
-  ];
+  const unitMap = {
+    temperature: "°C",
+    humidity: "%RH",
+    light: "Lux",
+    water: "%",
+  };
 
-  let matchedGroup = null;
-  let matchedCrop = null;
+  useEffect(() => {
+    const fetchCropAndGroup = async () => {
+      try {
+        const res = await api.get(`/api/crop/${id}`);
+        const cropData = res.data.data;
+        setCrop(cropData);
 
-  for (const group of groups) {
-    const crop = group.crops?.find((c) => c.id === cropId);
-    if (crop) {
-      matchedGroup = group;
-      matchedCrop = crop;
-      break;
+        const groupRes = await api.get("/api/group/");
+        const matchedGroup = groupRes.data.data.find(
+          (group) => group.group_id === cropData.group_id
+        );
+
+        if (matchedGroup) {
+          setGroupLocation(matchedGroup.location);
+          setGroupName(matchedGroup.name);
+        } else {
+          setGroupLocation("위치 정보 없음");
+          setGroupName("그룹 정보 없음");
+        }
+      } catch (err) {
+        console.error("작물 또는 그룹 정보 조회 실패:", err);
+        setError("존재하지 않는 페이지입니다.");
+      }
+    };
+
+    fetchCropAndGroup();
+  }, [id]);
+  const fetchSensors = async () => {
+    try {
+      const res = await api.get("/api/sensor/", {
+        params: { crop_id: id },
+      });
+      setSensors(res.data.data);
+    } catch (err) {
+      console.error("센서 정보 조회 실패:", err);
     }
-  }
+  };
+  useEffect(() => {
+    fetchSensors();
+    const interval = setInterval(fetchSensors, 1000);
+    return () => clearInterval(interval);
+  }, [id]);
 
-  if (!matchedCrop || !matchedGroup) {
+  if (error) {
     return (
       <div>
-        <h2>존재하지 않는 페이지입니다.</h2>
+        <h2>{error}</h2>
         <button onClick={() => navigate("/main")}>돌아가기</button>
       </div>
     );
   }
 
+  if (!crop) return <p>로딩 중...</p>;
+
+  const { name, harvest, posts, schedules } = crop;
+
   return (
     <div className="crop-detail">
-      <div className="crop-detail-group">
-        <p>{matchedGroup.title}</p>
-        <BiMap />
-        <p>{matchedGroup.location}</p>
+      <div className="crop-detail-header">
+        <h2>{groupName}</h2>
+        <div className="crop-detail-location">
+          <BiMap size={35} />
+          <p>{groupLocation}</p>
+        </div>
       </div>
-      <hr />
-      <div className="crop-detail-title">
-        <h2>{matchedCrop.name}</h2>
-        <p>{matchedCrop.status}</p>
-      </div>
-      <div className="crop-status-section">
-        {mockSensorData.map((item, idx) => (
-          <StatusCard key={idx} label={item.label} value={item.value} />
-        ))}
-      </div>
-      <div className="crop-posts-section">
-        {posts.map((post) => (
-          <div key={post.id} className="crop-post-card">
-            <img src={post.postImg} />
-            <p>{post.content}</p>
-            {post.liked ? <BsHeart /> : <BsHeartFill />}
-          </div>
-        ))}
+      <div className="crop-detail-content">
+        <div className="crop-status-section">
+          {sensors.map((sensor) => (
+            <StatusCard
+              key={sensor.sensor_id}
+              label={sensor.name}
+              value={`${sensor.value} ${unitMap[sensor.sensor_type] || ""}`}
+            />
+          ))}
+        </div>
+        <AddBtn onClick={() => setShowAddModal(true)} />
+        {showAddModal && (
+          <AddFormModal
+            type="sensor"
+            cropId={cropId}
+            onSensorAdded={fetchSensors}
+            onClose={() => setShowAddModal(false)}
+          />
+        )}
+        <div className="crop-posts">
+          {posts.map((post) => (
+            <div key={post.post_id} className="crop-post-card">
+              <div className="crop-post-author">
+                <FaUserCircle size={36} />
+                <p>{post.author || "익명"}</p>
+              </div>
+              <img
+                src={post.image_url}
+                alt="작물 이미지"
+                className="crop-post-img"
+              />
+              <p>{post.content}</p>
+              <div className="crop-post-bottom">
+                <BsHeart size={32} className="crop-post-icon" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
       <div className="crop-reserve-section">
-        예약하기
-        <Scheduler />
+        <Scheduler schedules={schedules} />
       </div>
     </div>
   );

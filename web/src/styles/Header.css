@@ -1,7 +1,12 @@
 header {
-  height: 143px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 140px;
 }
 
 .header-logo {
-  width: 436px;
+  width: 370px;
+  object-fit: contain;
 }

@@ -1,10 +1,11 @@
 import React from "react";
+import "../styles/StatusCard.css";
 
 const StatusCard = ({ label, value }) => {
   return (
     <div className="status-card">
-      <span>{label}</span>
-      <span>{value}</span>
+      <h3>{label}</h3>
+      <p>{value}</p>
     </div>
   );
 };

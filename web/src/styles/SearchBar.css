@@ -1,24 +1,31 @@
 .searchbar {
   display: flex;
+  box-sizing: border-box;
   align-items: center;
   justify-content: center;
   width: 821px;
-  height: 58px;
+  height: 48px;
   border-radius: 20px;
-
-  background-color: lightgray;
+  border: 1px solid #000;
+  background: #fff;
+  padding: 14px 20px;
+  margin-top: 15px;
 }
 
 .searchbar > input {
   height: 100%;
   flex: 1;
   border: none;
-  font-size: 24px;
+  font-size: 20px;
   background-color: transparent;
 }
 
 .searchbar > input:focus {
   outline: none;
+}
+
+.searchbar > ::placeholder {
+  font-size: 20px;
 }
 
 .searchbutton {
