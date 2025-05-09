@@ -1,21 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { RiSearchLine } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
 import "../styles/SearchBar.css";
 
-const SearchBar = () => {
-  const [query, setQuery] = useState("");
-  const navigate = useNavigate();
-
-  const handleSearch = () => {
-    if (query.trim()) {
-      navigate(`/search-result?query=${query.trim()}`);
-    }
-  };
-
+const SearchBar = ({ value, onChange, onSearch }) => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      handleSearch();
+      onSearch(); // 부모에게 검색 요청
     }
   };
 
@@ -23,15 +13,12 @@ const SearchBar = () => {
     <div className="searchbar">
       <input
         type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
+        placeholder="검색어를 입력하세요"
       />
-      <RiSearchLine
-        className="search-button"
-        size={24}
-        onClick={handleSearch}
-      />
+      <RiSearchLine className="search-button" size={24} onClick={onSearch} />
     </div>
   );
 };
