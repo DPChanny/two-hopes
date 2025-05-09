@@ -5,6 +5,7 @@ import { BsHeart, BsHeartFill } from "react-icons/bs";
 import Scheduler from "../components/Scheduler";
 import StatusCard from "../components/StatusCard";
 import api from "../axiosConfig.js";
+import "../styles/CropDetail.css";
 
 const CropDetail = () => {
   const navigate = useNavigate();
@@ -84,6 +85,15 @@ const CropDetail = () => {
 
   return (
     <div className="crop-detail">
+      <div className="crop-status-section">
+        {statusItems.map((item) => (
+          <StatusCard
+            key={item.type}
+            label={item.label}
+            value={getSensorValue(item.type)}
+          />
+        ))}
+      </div>
       <div className="crop-detail-group">
         <p>{name}</p>
         <BiMap />
@@ -94,15 +104,7 @@ const CropDetail = () => {
         <h2>{name}</h2>
         <p>{harvest ? "수확 완료" : "미수확"}</p>
       </div>
-      <div className="crop-status-section">
-        {statusItems.map((item) => (
-          <StatusCard
-            key={item.type}
-            label={item.label}
-            value={getSensorValue(item.type)}
-          />
-        ))}
-      </div>
+
       <div className="crop-posts-section">
         {posts.map((post) => (
           <div key={post.post_id} className="crop-post-card">
