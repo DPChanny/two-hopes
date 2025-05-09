@@ -1,0 +1,35 @@
+.reservation {
+  max-width: 400px;
+  margin: auto;
+  font-family: sans-serif;
+}
+
+.section {
+  margin-top: 20px;
+}
+
+.time-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.time-btn {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.time-btn.selected {
+  background-color: #c8e6c9;
+  border-color: #66bb6a;
+}
+
+.time-btn.disabled {
+  background-color: #eee;
+  color: #aaa;
+  cursor: not-allowed;
+}

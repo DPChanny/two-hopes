@@ -3,17 +3,18 @@ import { groups } from "../data/dummyData";
 import { useNavigate, useParams } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import "../styles/Scheduler.css";
 
 const Scheduler = () => {
   const { id } = useParams();
   const cropId = parseInt(id);
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedTimes, setSelectedTimes] = useState([]);
 
   const reservedSlots = {
-    "2023-05-28": ["09:00", "10:00", "16:00"],
-    "2023-05-29": ["13:00"],
+    "2025-05-09": ["09:00", "10:00", "16:00"],
+    "2023-05-10": ["13:00"],
   };
 
   const timeOptions = [
@@ -47,23 +48,58 @@ const Scheduler = () => {
     );
   }
 
-  const handleChange = (newSchedule) => {
-    setSchedule(newSchedule);
+  const formatDate = (date) => date.toISOString().slice(0, 10);
+
+  const handleTimeSelect = (time) => {
+    const isSelected = selectedTimes.includes(time);
+
+    if (isSelected) {
+      setSelectedTimes(selectedTimes.filter((t) => t !== time));
+    } else {
+      if (selectedTimes.length >= 3) return;
+      setSelectedTimes([...selectedTimes, time]);
+    }
+  };
+
+  const isReserved = (date, time) => {
+    const dateKey = formatDate(date);
+    return reservedSlots[dateKey]?.includes(time);
   };
 
   return (
     <div className="schedular">
-      <h1>{matchedCropName}</h1>
       날짜 선택
       <DatePicker
         selected={selectedDate}
         onChange={(date) => {
           setSelectedDate(date);
-          setSchedule([]);
+          setSelectedTimes(null);
         }}
         dateFormat="yyyy-MM-dd"
         minDate={new Date()}
       />
+      <div className="time-selector">
+        <label>예약 시간</label>
+        <p>3시간까지 선택 가능합니다.</p>
+        <div className="time-grid">
+          {timeOptions.map((time) => {
+            const disabled = isReserved(selectedDate, time);
+            const isSelected = selectedTimes.includes(time);
+
+            return (
+              <button
+                key={time}
+                className={`time-btn ${disabled ? "disabled" : ""} ${
+                  isSelected ? "selected" : ""
+                }`}
+                onClick={() => !disabled && handleTimeSelect(time)}
+              >
+                {time} ~ {String(+time.slice(0, 2) + 1).padStart(2, "0")}:00
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };

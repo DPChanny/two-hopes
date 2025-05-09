@@ -3,12 +3,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import { groups, cropPosts } from "../data/dummyData";
 import { BiMap } from "react-icons/bi";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
+import Scheduler from "../components/Scheduler";
+import StatusCard from "../components/StatusCard";
 
 const CropDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const cropId = parseInt(id);
   const posts = cropPosts.filter((post) => post.cropId === cropId);
+
+  const mockSensorData = [
+    { label: "온도", value: "36도" },
+    { label: "습도", value: "좋음" },
+    { label: "일조량", value: "안좋음" },
+  ];
 
   let matchedGroup = null;
   let matchedCrop = null;
@@ -43,7 +51,12 @@ const CropDetail = () => {
         <h2>{matchedCrop.name}</h2>
         <p>{matchedCrop.status}</p>
       </div>
-      <div className="crop-posts">
+      <div className="crop-status-section">
+        {mockSensorData.map((item, idx) => (
+          <StatusCard key={idx} label={item.label} value={item.value} />
+        ))}
+      </div>
+      <div className="crop-posts-section">
         {posts.map((post) => (
           <div key={post.id} className="crop-post-card">
             <img src={post.postImg} />
@@ -52,11 +65,9 @@ const CropDetail = () => {
           </div>
         ))}
       </div>
-      <div
-        className="reserve-btn"
-        onClick={() => navigate(`/crop/${cropId}/schedular`)}
-      >
+      <div className="crop-reserve-section">
         예약하기
+        <Scheduler />
       </div>
     </div>
   );
