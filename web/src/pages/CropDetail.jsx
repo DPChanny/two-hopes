@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BiMap } from "react-icons/bi";
-import { BsHeart, BsHeartFill } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
 import Scheduler from "../components/Scheduler";
 import StatusCard from "../components/StatusCard";
@@ -9,6 +8,7 @@ import api from "../axiosConfig.js";
 import "../styles/CropDetail.css";
 import AddBtn from "../components/AddBtn";
 import AddFormModal from "../components/AddFormModal.jsx";
+import CommentSection from "../components/CommentSection";
 
 const CropDetail = () => {
   const navigate = useNavigate();
@@ -125,6 +125,7 @@ const CropDetail = () => {
                 className="crop-post-img"
               />
               <p>{post.content}</p>
+              <CommentSection postId={post.post_id} />
               <div className="crop-post-bottom">
                 <BsHeart size={32} className="crop-post-icon" />
               </div>
