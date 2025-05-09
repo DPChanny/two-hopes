@@ -1,9 +1,8 @@
-# 3. serial_update_from_config.py – config.json 기반으로 시리얼 수신 → 서버 업데이트
-
 import argparse
 import json
 import serial
 import requests
+import time
 
 
 def load_config(config_path):
@@ -38,28 +37,49 @@ def send_to_server(api_base_url: str, sensor_id: int, value: float):
         print(f"[Error] sensor_id={sensor_id}, exception={e}")
 
 
-def listen_serial(com: str, api_base_url: str, baud: int = 9600):
+def listen_serial(
+    com: str, api_base_url: str, baud: int = 9600, interval_sec: float = 2.5
+):
     print(f"🔌 Waiting for serial on {com}...")
     try:
-        with serial.Serial(com, baud, timeout=2) as ser:
+        with serial.Serial(com, baud, timeout=1) as ser:
             print(f"Connected to {com} ({baud} baud)")
+
+            latest_values = {}  # sensor_id: value
+            last_sent = time.time()
+
             while True:
-                try:
-                    line = ser.readline().decode("utf-8").strip()
-                    if not line:
-                        continue
-                    sensor_id, value = parse_line(line)
-                    if sensor_id is not None:
-                        send_to_server(api_base_url, sensor_id, value)
-                except UnicodeDecodeError:
-                    print("[Decode Error] Invalid serial data")
+                now = time.time()
+
+                # 시리얼 데이터 수신
+                if ser.in_waiting:
+                    try:
+                        line = ser.readline().decode("utf-8").strip()
+                        if line:
+                            sensor_id, value = parse_line(line)
+                            if sensor_id is not None:
+                                latest_values[sensor_id] = value
+                    except UnicodeDecodeError:
+                        print("[Decode Error] Invalid serial data")
+
+                # 전송 타이밍 도달
+                if now - last_sent >= interval_sec:
+                    if latest_values:
+                        print(
+                            f"\n⏱ Sending {len(latest_values)} sensor(s) to server..."
+                        )
+                        for sid, val in latest_values.items():
+                            send_to_server(api_base_url, sid, val)
+                        latest_values.clear()
+                    last_sent = now
+
     except serial.SerialException as e:
         print(f"[Serial Error] {e}")
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Listen to serial and update server based on config.json"
+        description="Listen to serial and update server every N seconds based on config.json"
     )
     parser.add_argument(
         "--config-path", required=True, help="Path to config.json"
@@ -69,10 +89,13 @@ def main():
         default="http://3.26.202.82:8000/api/",
         help="Sensor update API endpoint",
     )
+    parser.add_argument(
+        "--interval", type=int, default=5, help="Send interval in seconds"
+    )
 
     args = parser.parse_args()
     config = load_config(args.config_path)
-    listen_serial(config["com"], args.api_base_url)
+    listen_serial(config["com"], args.api_base_url, interval_sec=args.interval)
 
 
 if __name__ == "__main__":
