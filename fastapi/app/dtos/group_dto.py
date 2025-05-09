@@ -26,6 +26,11 @@ class AddGroupRequestDTO(BaseModel):
     location: str
 
 
+class UpdateGroupRequestDTO(BaseModel):
+    name: Optional[str] = None
+    location: Optional[str] = None
+
+
 class GetGroupListRequestDTO(BaseModel):
     name: Optional[str] = None
     location: Optional[str] = None

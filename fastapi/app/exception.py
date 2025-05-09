@@ -1,4 +1,7 @@
-# exception.py
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
+
+from pydantic import ValidationError
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
@@ -36,3 +39,14 @@ async def validation_exception_handler(
             data=None,
         ).model_dump(),
     )
+
+
+def handle_exception(e: Exception, db: Session = None):
+    if isinstance(e, SQLAlchemyError):
+        if db:
+            db.rollback()
+        raise CustomException(1400, f"DB error: {str(e)}")
+    elif isinstance(e, ValidationError):
+        raise CustomException(1401, f"Validation error: {str(e)}")
+    else:
+        raise CustomException(1500, f"Unknown error: {str(e)}")

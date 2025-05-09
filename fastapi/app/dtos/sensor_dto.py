@@ -26,3 +26,9 @@ class GetSensorListRequestDTO(BaseModel):
 
 class GetSensorListResponseDTO(BaseResponseDTO[List[SensorDTO]]):
     pass
+
+
+class UpdateSensorRequestDTO(BaseModel):
+    name: Optional[str] = None
+    type: Optional[str] = None
+    value: Optional[str] = None

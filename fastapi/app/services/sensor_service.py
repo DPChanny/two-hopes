@@ -1,17 +1,16 @@
-from pydantic import ValidationError
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError
 
 from dtos.sensor_dto import (
     AddSensorRequestDTO,
     GetSensorListRequestDTO,
     GetSensorListResponseDTO,
     SensorDTO,
+    UpdateSensorRequestDTO,
 )
 from entities.sensor import Sensor
 from entities.crop import Crop
 from dtos.base_dto import BaseResponseDTO
-from exception import CustomException
+from exception import CustomException, handle_exception
 
 
 def add_sensor_service(
@@ -29,11 +28,9 @@ def add_sensor_service(
             message="Sensor successfully added.",
             data=SensorDTO.model_validate(sensor),
         )
-    except SQLAlchemyError as e:
-        db.rollback()
-        raise CustomException(1400, f"DB error: {str(e)}")
-    except ValidationError as e:
-        raise CustomException(1401, f"Validation error: {str(e)}")
+
+    except Exception as e:
+        handle_exception(e, db)
 
 
 def get_sensor_list_service(
@@ -56,8 +53,31 @@ def get_sensor_list_service(
             message="Sensor list retrieved successfully.",
             data=sensor_dtos,
         )
-    except SQLAlchemyError as e:
-        db.rollback()
-        raise CustomException(1400, f"DB error: {str(e)}")
-    except ValidationError as e:
-        raise CustomException(1401, f"Validation error: {str(e)}")
+
+    except Exception as e:
+        handle_exception(e, db)
+
+
+def update_sensor_service(
+    sensor_id: int, dto: UpdateSensorRequestDTO, db: Session
+) -> BaseResponseDTO[SensorDTO]:
+    try:
+        sensor = db.query(Sensor).filter(Sensor.sensor_id == sensor_id).first()
+        if not sensor:
+            raise CustomException(1404, "Sensor not found")
+
+        for key, value in dto.model_dump(exclude_unset=True).items():
+            setattr(sensor, key, value)
+
+        db.commit()
+        db.refresh(sensor)
+
+        return BaseResponseDTO(
+            success=True,
+            code=200,
+            message="Sensor successfully updated.",
+            data=SensorDTO.model_validate(sensor),
+        )
+
+    except Exception as e:
+        handle_exception(e, db)

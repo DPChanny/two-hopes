@@ -1,6 +1,4 @@
-from pydantic import ValidationError
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError
 
 from entities.schedule import Schedule
 from entities.crop import Crop
@@ -11,7 +9,7 @@ from dtos.schedule_dto import (
     ScheduleDTO,
 )
 from dtos.base_dto import BaseResponseDTO
-from exception import CustomException
+from exception import CustomException, handle_exception
 
 
 def add_schedule_service(
@@ -38,11 +36,9 @@ def add_schedule_service(
             message="Schedule successfully added.",
             data=ScheduleDTO.model_validate(schedule),
         )
-    except SQLAlchemyError as e:
-        db.rollback()
-        raise CustomException(1400, f"DB error: {str(e)}")
-    except ValidationError as e:
-        raise CustomException(1401, f"Validation error: {str(e)}")
+
+    except Exception as e:
+        handle_exception(e, db)
 
 
 def get_schedule_list_service(
@@ -67,8 +63,6 @@ def get_schedule_list_service(
             message="Schedule list retrieved successfully.",
             data=schedule_dtos,
         )
-    except SQLAlchemyError as e:
-        db.rollback()
-        raise CustomException(1400, f"DB error: {str(e)}")
-    except ValidationError as e:
-        raise CustomException(1401, f"Validation error: {str(e)}")
+
+    except Exception as e:
+        handle_exception(e, db)

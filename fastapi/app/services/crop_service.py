@@ -1,6 +1,4 @@
-from pydantic import ValidationError
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import joinedload
 
 from dtos.crop_dto import (
@@ -12,7 +10,7 @@ from dtos.crop_dto import (
     CropDetailDTO,
 )
 from entities.crop import Crop
-from exception import CustomException
+from exception import CustomException, handle_exception
 
 
 def get_crop_detail_service(
@@ -39,10 +37,9 @@ def get_crop_detail_service(
             message="Crop detail retrieved successfully.",
             data=CropDetailDTO.model_validate(crop),
         )
-    except SQLAlchemyError as e:
-        raise CustomException(1400, f"DB error: {str(e)}")
-    except ValidationError as e:
-        raise CustomException(1401, f"Validation error: {str(e)}")
+
+    except Exception as e:
+        handle_exception(e, db)
 
 
 def add_crop_service(
@@ -56,9 +53,8 @@ def add_crop_service(
 
         return get_crop_detail_service(crop.crop_id, db)
 
-    except SQLAlchemyError as e:
-        db.rollback()
-        raise CustomException(1400, f"DB error: {str(e)}")
+    except Exception as e:
+        handle_exception(e, db)
 
 
 def get_crop_list_service(
@@ -79,7 +75,6 @@ def get_crop_list_service(
             message="Crop list retrieved successfully.",
             data=crop_dtos,
         )
-    except SQLAlchemyError as e:
-        raise CustomException(1400, f"DB error: {str(e)}")
-    except ValidationError as e:
-        raise CustomException(1401, f"Validation error: {str(e)}")
+
+    except Exception as e:
+        handle_exception(e, db)

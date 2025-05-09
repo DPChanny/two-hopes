@@ -9,10 +9,11 @@ from dtos.group_dto import (
     GetGroupDetailResponseDTO,
     GroupDTO,
     GroupDetailDTO,
+    UpdateGroupRequestDTO,
 )
 from entities.group import Group
 from entities.crop import Crop
-from exception import CustomException
+from exception import CustomException, handle_exception
 
 
 def get_group_detail_service(
@@ -40,10 +41,9 @@ def get_group_detail_service(
             message="Group detail retrieved successfully.",
             data=GroupDetailDTO.model_validate(group),
         )
-    except SQLAlchemyError as e:
-        raise CustomException(1400, f"DB error: {str(e)}")
-    except ValidationError as e:
-        raise CustomException(1401, f"Validation error: {str(e)}")
+
+    except Exception as e:
+        handle_exception(e, db)
 
 
 def add_group_service(
@@ -56,11 +56,9 @@ def add_group_service(
         db.refresh(group)
 
         return get_group_detail_service(group.group_id, db)
-    except SQLAlchemyError as e:
-        db.rollback()
-        raise CustomException(1400, f"DB error: {str(e)}")
-    except ValidationError as e:
-        raise CustomException(1401, f"Validation error: {str(e)}")
+
+    except Exception as e:
+        handle_exception(e, db)
 
 
 def get_group_list_service(
@@ -82,7 +80,26 @@ def get_group_list_service(
             message="Group list retrieved successfully.",
             data=group_dtos,
         )
-    except SQLAlchemyError as e:
-        raise CustomException(1400, f"DB error: {str(e)}")
-    except ValidationError as e:
-        raise CustomException(1401, f"Validation error: {str(e)}")
+
+    except Exception as e:
+        handle_exception(e, db)
+
+
+def update_group_service(
+    group_id: int, dto: UpdateGroupRequestDTO, db: Session
+) -> GetGroupDetailResponseDTO:
+    try:
+        group = db.query(Group).filter(Group.group_id == group_id).first()
+        if not group:
+            raise CustomException(1404, "Group not found")
+
+        for key, value in dto.model_dump(exclude_unset=True).items():
+            setattr(group, key, value)
+
+        db.commit()
+        db.refresh(group)
+
+        return get_group_detail_service(group.group_id, db)
+
+    except Exception as e:
+        handle_exception(e, db)
