@@ -17,17 +17,6 @@ const GroupDetail = () => {
   const [crops, setCrops] = useState([]);
   const [error, setError] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
-  const [group, setGroup] = useState(null); // ✅ 여기가 오류 수정 포인트
-
-  const fetchGroupData = async () => {
-    try {
-      const res = await api.get(`/api/group/${groupId}`);
-      setGroup(res.data.data);
-    } catch (err) {
-      console.error("그룹 불러오기 실패:", err);
-      setError("존재하지 않는 모임입니다.");
-    }
-  };
 
   const fetchCrops = async () => {
     try {

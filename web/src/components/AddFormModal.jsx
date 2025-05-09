@@ -4,18 +4,23 @@ import CustomSelect from "./CustomSelect";
 import { RiCloseFill } from "react-icons/ri";
 import "../styles/AddFormModal.css";
 import api from "../axiosConfig";
+import SensorSelect from "./SensorSelect";
 
 const AddFormModal = ({
   type,
   onClose,
   onGroupAdded,
-  groupId,
   onCropAdded,
+  onSensorAdded,
+  groupId,
+  cropId, // 센서 추가에 필요
 }) => {
   const [groupName, setGroupName] = useState("");
   const [location, setLocation] = useState("");
   const [cropName, setCropName] = useState("");
   const [cropType, setCropType] = useState(null);
+  const [sensorName, setSensorName] = useState("");
+  const [sensorType, setSensorType] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,33 +31,34 @@ const AddFormModal = ({
           name: groupName,
           location: location,
         };
-
         const res = await api.post("/api/group/", payload);
-        //const newGroup = res.data.data;
-        console.log("✅ 그룹 추가 응답:", res.data); // ✅ 이제 문제 없음
-
-        // 리스트에 추가 (Main에서 props로 콜백 전달 시)
+        console.log("✅ 그룹 추가 응답:", res.data);
         if (onGroupAdded) onGroupAdded();
         onClose();
-      }
-
-      // 나중에 crop 처리도 여기에 추가
-      else if (type === "crop") {
+      } else if (type === "crop") {
         const payload = {
-          group_id: groupId, // 이 props도 상단에서 받아야 함!
+          group_id: groupId,
           name: cropName,
           crop_type: cropType?.value,
         };
-
         const res = await api.post("/api/crop/", payload);
         console.log("🌱 작물 추가 성공:", res.data);
-
-        if (onCropAdded) onCropAdded(); // props로 콜백 전달하면 작물 목록 새로고침 가능
+        if (onCropAdded) onCropAdded();
+        onClose();
+      } else if (type === "sensor") {
+        const payload = {
+          crop_id: cropId,
+          name: sensorName,
+          sensor_type: sensorType?.value,
+        };
+        const res = await api.post("/api/sensor/", payload);
+        console.log("📡 센서 추가 성공:", res.data);
+        if (onSensorAdded) onSensorAdded();
         onClose();
       }
     } catch (error) {
-      console.error("그룹 추가 실패:", error);
-      alert("그룹 추가에 실패했습니다.");
+      console.error("추가 실패:", error);
+      alert("추가에 실패했습니다.");
     }
   };
 
@@ -61,7 +67,13 @@ const AddFormModal = ({
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <RiCloseFill className="modal-close" onClick={onClose} size={36} />
         <AddForm
-          title={type === "group" ? "그룹 추가" : "작물 추가"}
+          title={
+            type === "group"
+              ? "그룹 추가"
+              : type === "crop"
+              ? "작물 추가"
+              : "센서 추가"
+          }
           onSubmit={handleSubmit}
           buttonLabel="추가"
         >
@@ -80,7 +92,7 @@ const AddFormModal = ({
                 onChange={(e) => setLocation(e.target.value)}
               />
             </>
-          ) : (
+          ) : type === "crop" ? (
             <>
               <input
                 type="text"
@@ -93,6 +105,21 @@ const AddFormModal = ({
                 placeholder="작물 종류"
                 value={cropType}
                 onChange={(selectedOption) => setCropType(selectedOption)}
+              />
+            </>
+          ) : (
+            <>
+              <input
+                type="text"
+                placeholder="센서 이름"
+                value={sensorName}
+                onChange={(e) => setSensorName(e.target.value)}
+              />
+              <SensorSelect
+                className="sensor-type-select"
+                placeholder="센서 타입"
+                value={sensorType}
+                onChange={(selectedOption) => setSensorType(selectedOption)}
               />
             </>
           )}

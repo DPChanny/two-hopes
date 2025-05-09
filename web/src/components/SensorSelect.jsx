@@ -1,16 +1,15 @@
 import React from "react";
 import Select from "react-select";
 
-const CustomSelect = ({ className, placeholder, value, onChange }) => {
+const SensorSelect = ({ className, placeholder, value, onChange }) => {
   const options = [
-    { value: "vegetable", label: "야채" },
-    { value: "fruit", label: "과일" },
-    { value: "grain", label: "곡물" },
-    { value: "root", label: "근채" },
+    { value: "temperature", label: "온도" },
+    { value: "humidity", label: "습도" },
+    { value: "light", label: "조도" },
+    { value: "water", label: "수분" },
   ];
 
-  // 드롭다운 스타일
-  const CustomStyle = {
+  const customStyle = {
     control: (base) => ({
       ...base,
       backgroundColor: "#fff",
@@ -72,11 +71,11 @@ const CustomSelect = ({ className, placeholder, value, onChange }) => {
       className={className}
       placeholder={placeholder}
       options={options}
-      styles={CustomStyle}
+      styles={customStyle}
       value={value}
       onChange={onChange}
     />
   );
 };
 
-export default CustomSelect;
+export default SensorSelect;

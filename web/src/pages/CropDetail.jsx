@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BiMap } from "react-icons/bi";
-//import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { FaUserCircle } from "react-icons/fa";
 import Scheduler from "../components/Scheduler";
 import StatusCard from "../components/StatusCard";
 import api from "../axiosConfig.js";
 import "../styles/CropDetail.css";
 import AddBtn from "../components/AddBtn";
 import AddFormModal from "../components/AddFormModal.jsx";
-//import { GoCommentDiscussion } from "react-icons/go";
-import CommentSection from "../components/CommentSection"; // ✅ 추가
+import CommentSection from "../components/CommentSection";
 
 const CropDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const cropId = parseInt(id);
   const [crop, setCrop] = useState(null);
   const [error, setError] = useState("");
   const [groupLocation, setGroupLocation] = useState("");
+  const [groupName, setGroupName] = useState("");
   const [sensors, setSensors] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -41,8 +42,10 @@ const CropDetail = () => {
 
         if (matchedGroup) {
           setGroupLocation(matchedGroup.location);
+          setGroupName(matchedGroup.name);
         } else {
           setGroupLocation("위치 정보 없음");
+          setGroupName("그룹 정보 없음");
         }
       } catch (err) {
         console.error("작물 또는 그룹 정보 조회 실패:", err);
@@ -52,19 +55,17 @@ const CropDetail = () => {
 
     fetchCropAndGroup();
   }, [id]);
-
+  const fetchSensors = async () => {
+    try {
+      const res = await api.get("/api/sensor/", {
+        params: { crop_id: id },
+      });
+      setSensors(res.data.data);
+    } catch (err) {
+      console.error("센서 정보 조회 실패:", err);
+    }
+  };
   useEffect(() => {
-    const fetchSensors = async () => {
-      try {
-        const res = await api.get("/api/sensor/", {
-          params: { crop_id: id },
-        });
-        setSensors(res.data.data);
-      } catch (err) {
-        console.error("센서 정보 조회 실패:", err);
-      }
-    };
-
     fetchSensors();
     const interval = setInterval(fetchSensors, 1000);
     return () => clearInterval(interval);
@@ -85,48 +86,52 @@ const CropDetail = () => {
 
   return (
     <div className="crop-detail">
-      <div className="crop-detail-group">
-        <p>작물유형: {name}</p>
-        <BiMap />
-        <p>위치 : {groupLocation}</p>
+      <div className="crop-detail-header">
+        <h2>{groupName}</h2>
+        <div className="crop-detail-location">
+          <BiMap size={35} />
+          <p>{groupLocation}</p>
+        </div>
       </div>
-      <hr />
-      <div className="crop-detail-title">
-        <h2>{name}</h2>
-        <p>{harvest ? "수확 필요" : "성장중"}</p>
-      </div>
-      <div className="crop-status-section">
-        {sensors.map((sensor) => (
-          <StatusCard
-            key={sensor.sensor_id}
-            label={sensor.name}
-            value={`${sensor.value} ${unitMap[sensor.sensor_type] || ""}`}
-          />
-        ))}
-      </div>
-      <AddBtn onClick={() => setShowAddModal(true)} />
-      {showAddModal && (
-        <AddFormModal type="sensor" onClose={() => setShowAddModal(false)} />
-      )}
-      <div className="crop-posts-section">
-        {posts.map((post) => (
-          <div key={post.post_id} className="crop-post-card">
-            <p>👤 {post.author || "익명"}</p>
-            <img
-              src={post.image_url}
-              alt="작물 이미지"
-              style={{
-                width: "100%",
-                maxWidth: "300px",
-                height: "auto",
-                borderRadius: "10px",
-              }}
+      <div className="crop-detail-content">
+        <div className="crop-status-section">
+          {sensors.map((sensor) => (
+            <StatusCard
+              key={sensor.sensor_id}
+              label={sensor.name}
+              value={`${sensor.value} ${unitMap[sensor.sensor_type] || ""}`}
             />
-            <p>{post.content}</p>
-            console.log("CommentSection:", CommentSection);
-            <CommentSection postId={post.post_id} />
-          </div>
-        ))}
+          ))}
+        </div>
+        <AddBtn onClick={() => setShowAddModal(true)} />
+        {showAddModal && (
+          <AddFormModal
+            type="sensor"
+            cropId={cropId}
+            onSensorAdded={fetchSensors}
+            onClose={() => setShowAddModal(false)}
+          />
+        )}
+        <div className="crop-posts">
+          {posts.map((post) => (
+            <div key={post.post_id} className="crop-post-card">
+              <div className="crop-post-author">
+                <FaUserCircle size={36} />
+                <p>{post.author || "익명"}</p>
+              </div>
+              <img
+                src={post.image_url}
+                alt="작물 이미지"
+                className="crop-post-img"
+              />
+              <p>{post.content}</p>
+              <CommentSection postId={post.post_id} />
+              <div className="crop-post-bottom">
+                <BsHeart size={32} className="crop-post-icon" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
       <div className="crop-reserve-section">
         <Scheduler schedules={schedules} />
