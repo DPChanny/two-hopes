@@ -81,6 +81,16 @@ const CropDetail = () => {
 
   return (
     <div className="crop-detail">
+      <div className="crop-detail-group">
+        <p>작물유형: {name}</p>
+        <BiMap />
+        <p>위치 : {groupLocation}</p>
+      </div>
+      <hr />
+      <div className="crop-detail-title">
+        <h2>{name}</h2>
+        <p>{harvest ? "수확 필요" : "성장중"}</p>
+      </div>
       <div className="crop-status-section">
         {sensors.map((sensor) => (
           <StatusCard
@@ -91,12 +101,6 @@ const CropDetail = () => {
         ))}
       </div>
       <AddBtn />
-      <hr />
-      <div className="crop-detail-title">
-        <h2>{name}</h2>
-        <p>{harvest ? "수확 필요" : "성장중"}</p>
-      </div>
-
       <div className="crop-posts-section">
         {posts.map((post) => (
           <div key={post.post_id} className="crop-post-card">
