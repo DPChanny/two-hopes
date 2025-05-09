@@ -9,7 +9,7 @@ services:
           "CMD",
           "mysql",
           "-h",
-          "localhost",
+          "127.0.0.1",
           "-u",
           "${MYSQL_USER}",
           "-p${MYSQL_PASSWORD}",
