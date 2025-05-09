@@ -5,6 +5,7 @@ import api from "../axiosConfig.js";
 import { LuLeaf } from "react-icons/lu";
 import "../styles/GroupDetail.css";
 import AddBtn from "../components/AddBtn";
+import AddFormModal from "../components/AddFormModal.jsx";
 
 const GroupDetail = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const GroupDetail = () => {
   const [location, setLocation] = useState("");
   const [crops, setCrops] = useState([]);
   const [error, setError] = useState("");
+  const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
     const fetchGroup = async () => {
@@ -68,21 +70,26 @@ const GroupDetail = () => {
         <p>{location}</p>
       </div>
       <div className="crop-container">
-              {crops.map((crop) => (
-        <div
-          key={crop.id}
-          className="crop-card"
-          onClick={() => navigate(`/crop/${crop.crop_id}`)}
-        >
-          <div className="crop-title">
+        {crops.map((crop) => (
+          <div
+            key={crop.id}
+            className="crop-card"
+            onClick={() => navigate(`/crop/${crop.crop_id}`)}
+          >
+            <div className="crop-title">
               <LuLeaf size={35} />
               <p>{crop.name}</p>
             </div>
-            <div className="crop-status">{crop.harvest ? "수확 완료" : "미수확"}</div>
+            <div className="crop-status">
+              {crop.harvest ? "수확 완료" : "미수확"}
+            </div>
           </div>
         ))}
       </div>
-      <AddBtn />
+      <AddBtn onClick={() => setShowAddModal(true)} />
+      {showAddModal && (
+        <AddFormModal type="crop" onClose={() => setShowAddModal(false)} />
+      )}
     </div>
   );
 };

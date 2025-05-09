@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-//import { groups, cropPosts } from "../data/dummyData";
 import { BiMap } from "react-icons/bi";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import Scheduler from "../components/Scheduler";
@@ -10,8 +9,6 @@ import api from "../axiosConfig.js";
 const CropDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  //const cropId = parseInt(id);
-  //const posts = cropPosts.filter((post) => post.cropId === cropId);
   const [crop, setCrop] = useState(null);
   const [error, setError] = useState("");
   const [groupLocation, setGroupLocation] = useState("");
@@ -78,7 +75,7 @@ const CropDetail = () => {
 
   if (!crop) return <p>로딩 중...</p>;
 
-  const { name, harvest, crop_type, posts, schedules } = crop;
+  const { name, harvest, posts, schedules } = crop;
 
   const getSensorValue = (type) => {
     const sensor = sensors.find((s) => s.sensor_type === type);
@@ -88,9 +85,9 @@ const CropDetail = () => {
   return (
     <div className="crop-detail">
       <div className="crop-detail-group">
-        <p>작물유형: {name}</p>
+        <p>{name}</p>
         <BiMap />
-        <p>위치 : {groupLocation}</p>
+        <p>{groupLocation}</p>
       </div>
       <hr />
       <div className="crop-detail-title">
@@ -120,7 +117,6 @@ const CropDetail = () => {
                 borderRadius: "10px",
               }}
             />
-
             <p>{post.content}</p>
             <div>{post.liked ? <BsHeartFill /> : <BsHeart />}</div>
           </div>
@@ -135,45 +131,3 @@ const CropDetail = () => {
 };
 
 export default CropDetail;
-
-/*useEffect(() => {
-      const fetchCrop = async () => {
-        try {
-          const res = await api.get(`/api/crop/${id}`);
-          setCrop(res.data.data);
-        } catch (err) {
-          console.error("작물 상세 조회 실패:", err);
-          setError("존재하지 않는 페이지입니다.");
-        }
-      };
-  
-      fetchCrop();
-    }, [id]);
-
-    useEffect(() => {
-      const fetchCrop = async () => {
-        try {
-          const res = await api.get(`/api/crop/${id}`);
-          const cropData = res.data.data;
-          setCrop(cropData);
-    
-          // 그룹 정보 요청
-          const groupRes = await api.get("/api/group/");
-          const matchedGroup = groupRes.data.data.find(
-            (group) => group.group_id === cropData.group_id
-          );
-    
-          if (matchedGroup) {
-            setGroupLocation(matchedGroup.location);
-          } else {
-            setGroupLocation("위치 정보 없음");
-          }
-    
-        } catch (err) {
-          console.error("작물 상세 조회 실패:", err);
-          setError("존재하지 않는 페이지입니다.");
-        }
-      };
-    
-      fetchCrop();
-    }, [id]);*/

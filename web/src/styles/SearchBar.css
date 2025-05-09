@@ -16,12 +16,16 @@
   height: 100%;
   flex: 1;
   border: none;
-  font-size: 24px;
+  font-size: 20px;
   background-color: transparent;
 }
 
 .searchbar > input:focus {
   outline: none;
+}
+
+.searchbar > ::placeholder {
+  font-size: 20px;
 }
 
 .searchbutton {
