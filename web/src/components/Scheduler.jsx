@@ -157,6 +157,7 @@ export default function Scheduler() {
         );
       } else {
         try {
+          console.log("hi");
           await axios.patch(`/api/schedule/${updated.schedule_id}`, {
             weekday: WEEKDAY_INDEX_TO_STR[updated.weekday],
             start_time: updated.start_time,
