@@ -19,7 +19,6 @@ from exception import CustomException, handle_exception
 def get_group_detail_service(
     group_id: int, db: Session
 ) -> GetGroupDetailResponseDTO:
-    ...
     try:
         group = (
             db.query(Group)
@@ -53,7 +52,6 @@ def add_group_service(
         group = Group(name=dto.name, location=dto.location)
         db.add(group)
         db.commit()
-        db.refresh(group)
 
         return get_group_detail_service(group.group_id, db)
 
@@ -97,7 +95,6 @@ def update_group_service(
             setattr(group, key, value)
 
         db.commit()
-        db.refresh(group)
 
         return get_group_detail_service(group.group_id, db)
 

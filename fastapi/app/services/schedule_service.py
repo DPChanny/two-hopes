@@ -7,6 +7,7 @@ from dtos.schedule_dto import (
     GetScheduleListRequestDTO,
     GetScheduleListResponseDTO,
     ScheduleDTO,
+    UpdateScheduleRequestDTO,
 )
 from dtos.base_dto import BaseResponseDTO
 from exception import CustomException, handle_exception
@@ -62,6 +63,35 @@ def get_schedule_list_service(
             code=200,
             message="Schedule list retrieved successfully.",
             data=schedule_dtos,
+        )
+
+    except Exception as e:
+        handle_exception(e, db)
+
+
+def update_schedule_service(
+    schedule_id: int, dto: UpdateScheduleRequestDTO, db: Session
+) -> BaseResponseDTO[ScheduleDTO]:
+    try:
+        schedule = (
+            db.query(Schedule)
+            .filter(Schedule.schedule_id == schedule_id)
+            .first()
+        )
+        if not schedule:
+            raise CustomException(404, "Schedule not found.")
+
+        for key, value in dto.model_dump(exclude_unset=True).items():
+            setattr(schedule, key, value)
+
+        db.commit()
+        db.refresh(schedule)
+
+        return BaseResponseDTO(
+            success=True,
+            code=200,
+            message="Schedule successfully updated.",
+            data=ScheduleDTO.model_validate(schedule),
         )
 
     except Exception as e:

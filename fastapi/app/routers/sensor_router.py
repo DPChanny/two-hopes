@@ -35,7 +35,7 @@ def get_sensor_list_route(
 
 
 @sensor_router.patch("/{sensor_id}", response_model=BaseResponseDTO[SensorDTO])
-def update_sensor(
+def update_sensor_route(
     sensor_id: int, dto: UpdateSensorRequestDTO, db: Session = Depends(get_db)
 ):
     return update_sensor_service(sensor_id, dto, db)

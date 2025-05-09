@@ -24,11 +24,11 @@ class GetSensorListRequestDTO(BaseModel):
     crop_id: Optional[int] = None
 
 
-class GetSensorListResponseDTO(BaseResponseDTO[List[SensorDTO]]):
-    pass
-
-
 class UpdateSensorRequestDTO(BaseModel):
     name: Optional[str] = None
     type: Optional[str] = None
     value: Optional[str] = None
+
+
+class GetSensorListResponseDTO(BaseResponseDTO[List[SensorDTO]]):
+    pass

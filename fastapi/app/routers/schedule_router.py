@@ -6,11 +6,13 @@ from dtos.schedule_dto import (
     GetScheduleListRequestDTO,
     GetScheduleListResponseDTO,
     ScheduleDTO,
+    UpdateScheduleRequestDTO,
 )
 from dtos.base_dto import BaseResponseDTO
 from services.schedule_service import (
     add_schedule_service,
     get_schedule_list_service,
+    update_schedule_service,
 )
 
 schedule_router = APIRouter()
@@ -32,3 +34,12 @@ def get_schedule_list_route(
     return get_schedule_list_service(
         GetScheduleListRequestDTO(group_id=group_id, crop_id=crop_id), db
     )
+
+
+@schedule_router.patch(
+    "/{schedule_id}", response_model=BaseResponseDTO[ScheduleDTO]
+)
+def update_schedule_route(
+    schedule: int, dto: UpdateScheduleRequestDTO, db: Session = Depends(get_db)
+):
+    return update_schedule_service(schedule, dto, db)

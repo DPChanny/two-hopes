@@ -16,17 +16,10 @@ class CropDTO(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class CropDetailDTO(BaseModel):
-    crop_id: int
-    group_id: int
-    name: str
-    type: str
-    harvest: bool
+class CropDetailDTO(CropDTO):
     posts: List[PostDTO]
     schedules: List[ScheduleDTO]
     sensors: List[SensorDTO]
-
-    model_config = {"from_attributes": True}
 
 
 class AddCropRequestDTO(BaseModel):
@@ -37,6 +30,12 @@ class AddCropRequestDTO(BaseModel):
 
 class GetCropListRequestDTO(BaseModel):
     group_id: Optional[int] = None
+
+
+class UpdateCropRequestDTO(BaseModel):
+    name: Optional[str] = None
+    type: Optional[str] = None
+    harvest: Optional[bool] = None
 
 
 class GetCropListResponseDTO(BaseResponseDTO[List[CropDTO]]):

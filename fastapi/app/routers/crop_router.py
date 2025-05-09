@@ -6,11 +6,13 @@ from dtos.crop_dto import (
     GetCropDetailResponseDTO,
     GetCropListRequestDTO,
     GetCropListResponseDTO,
+    UpdateCropRequestDTO,
 )
 from services.crop_service import (
     add_crop_service,
     get_crop_list_service,
     get_crop_detail_service,
+    update_crop_service,
 )
 
 crop_router = APIRouter()
@@ -32,3 +34,10 @@ def get_crop_list_route(
 @crop_router.get("/{crop_id}", response_model=GetCropDetailResponseDTO)
 def get_crop_detail_route(crop_id: int, db: Session = Depends(get_db)):
     return get_crop_detail_service(crop_id, db)
+
+
+@crop_router.patch("/{crop_id}", response_model=GetCropDetailResponseDTO)
+def update_crop_route(
+    crop_id: int, dto: UpdateCropRequestDTO, db: Session = Depends(get_db)
+):
+    return update_crop_service(crop_id, dto, db)

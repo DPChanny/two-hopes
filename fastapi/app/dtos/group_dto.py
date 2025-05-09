@@ -12,13 +12,8 @@ class GroupDTO(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class GroupDetailDTO(BaseModel):
-    group_id: int
-    name: str
-    location: str
+class GroupDetailDTO(GroupDTO):
     crops: list[CropDetailDTO]
-
-    model_config = {"from_attributes": True}
 
 
 class AddGroupRequestDTO(BaseModel):
@@ -26,12 +21,12 @@ class AddGroupRequestDTO(BaseModel):
     location: str
 
 
-class UpdateGroupRequestDTO(BaseModel):
+class GetGroupListRequestDTO(BaseModel):
     name: Optional[str] = None
     location: Optional[str] = None
 
 
-class GetGroupListRequestDTO(BaseModel):
+class UpdateGroupRequestDTO(BaseModel):
     name: Optional[str] = None
     location: Optional[str] = None
 

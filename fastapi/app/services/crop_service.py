@@ -8,6 +8,7 @@ from dtos.crop_dto import (
     GetCropListResponseDTO,
     CropDTO,
     CropDetailDTO,
+    UpdateCropRequestDTO,
 )
 from entities.crop import Crop
 from exception import CustomException, handle_exception
@@ -49,7 +50,6 @@ def add_crop_service(
         crop = Crop(group_id=dto.group_id, name=dto.name, type=dto.type)
         db.add(crop)
         db.commit()
-        db.refresh(crop)
 
         return get_crop_detail_service(crop.crop_id, db)
 
@@ -75,6 +75,25 @@ def get_crop_list_service(
             message="Crop list retrieved successfully.",
             data=crop_dtos,
         )
+
+    except Exception as e:
+        handle_exception(e, db)
+
+
+def update_crop_service(
+    crop_id: int, dto: UpdateCropRequestDTO, db: Session
+) -> GetCropDetailResponseDTO:
+    try:
+        crop = db.query(Crop).filter(Crop.crop_id == crop_id).first()
+        if not crop:
+            raise CustomException(404, "Crop not found.")
+
+        for key, value in dto.model_dump(exclude_unset=True).items():
+            setattr(crop, key, value)
+
+        db.commit()
+
+        return get_crop_detail_service(crop.crop_id, db)
 
     except Exception as e:
         handle_exception(e, db)

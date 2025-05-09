@@ -6,11 +6,13 @@ from dtos.group_dto import (
     GetGroupDetailResponseDTO,
     GetGroupListResponseDTO,
     GetGroupListRequestDTO,
+    UpdateGroupRequestDTO,
 )
 from services.group_service import (
     add_group_service,
     get_group_list_service,
     get_group_detail_service,
+    update_group_service,
 )
 
 group_router = APIRouter()
@@ -35,3 +37,10 @@ def get_group_list_route(
 @group_router.get("/{group_id}", response_model=GetGroupDetailResponseDTO)
 def get_group_detail_route(group_id: int, db: Session = Depends(get_db)):
     return get_group_detail_service(group_id, db)
+
+
+@group_router.patch("/{group_id}", response_model=GetGroupDetailResponseDTO)
+def update_group_route(
+    group_id: int, dto: UpdateGroupRequestDTO, db: Session = Depends(get_db)
+):
+    return update_group_service(group_id, dto, db)
