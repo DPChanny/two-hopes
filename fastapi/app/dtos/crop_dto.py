@@ -43,7 +43,6 @@ class GetCropListRequestDTO(BaseModel):
 class UpdateCropRequestDTO(BaseModel):
     name: Optional[str] = None
     crop_type: Optional[CropTypeLiteral] = None  # type: ignore
-    harvest: Optional[bool] = None
 
 
 class GetCropListResponseDTO(BaseResponseDTO[List[CropDTO]]):

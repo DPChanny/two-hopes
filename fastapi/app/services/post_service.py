@@ -13,6 +13,7 @@ from dtos.post_dto import (
     PostDTO,
     PostDetailDTO,
 )
+from ai import get_harvest
 from sc3 import get_presigned_url
 
 
@@ -94,12 +95,21 @@ def update_post_service(
         if not post:
             raise CustomException(404, "Post not found.")
 
-        for key, value in dto.model_dump(exclude_unset=True).items():
+        update_data = dto.model_dump(exclude_unset=True)
+        image_url_updated = "image_url" in update_data
+
+        for key, value in update_data.items():
             setattr(post, key, value)
 
         db.commit()
 
+        if image_url_updated:
+            crop = db.query(Crop).filter(Crop.crop_id == post.crop_id).first()
+            crop.harvest = get_harvest(post.image_url)
+            db.commit()
+
         return get_post_detail_service(post.post_id, db)
+
     except Exception as e:
         handle_exception(e, db)
 

@@ -28,6 +28,7 @@ class AddPostRequestDTO(BaseModel):
 class UpdatePostRequestDTO(BaseModel):
     content: Optional[str] = None
     author: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class GetPostListRequestDTO(BaseModel):
