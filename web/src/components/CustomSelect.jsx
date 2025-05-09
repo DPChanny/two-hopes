@@ -4,10 +4,10 @@ import Select from "react-select";
 const CustomSelect = ({ className, placeholder, value, onChange }) => {
   // 드롭다운 옵션
   const options = [
-    { value: "야채", label: "vegatable" },
-    { value: "과일", label: "fruit" },
-    { value: "곡물", label: "grain" },
-    { value: "근채", label: "root" },
+    { value: "vegetable", label: "야채" },
+    { value: "fruit", label: "과일" },
+    { value: "grain", label: "곡물" },
+    { value: "root", label: "근채" },
   ];
 
   // 드롭다운 스타일
