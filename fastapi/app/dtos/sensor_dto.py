@@ -1,9 +1,10 @@
-from typing import Literal, Optional, List
-from pydantic import BaseModel
+from typing import Literal, Optional, List, get_args
+from enum import Enum
+from pydantic import BaseModel, field_serializer
 from dtos.base_dto import BaseResponseDTO, TimeMixin
+from entities.sensor import SensorType
 
-
-SensorTypeLiteral = Literal["temperature", "humidity", "light", "ph", "co2"]
+SensorTypeLiteral = Literal[*(e.value for e in SensorType)]
 
 
 class SensorDTO(BaseModel):
@@ -12,9 +13,13 @@ class SensorDTO(BaseModel):
 
     value: str
     name: str
-    sensor_type: SensorTypeLiteral
+    sensor_type: SensorType
 
     model_config = {"from_attributes": True}
+
+    @field_serializer("sensor_type")
+    def serialize_sensor_type(self, value: SensorType):
+        return value.value
 
 
 class SensorDetailDTO(SensorDTO, TimeMixin):
@@ -24,12 +29,12 @@ class SensorDetailDTO(SensorDTO, TimeMixin):
 class AddSensorRequestDTO(BaseModel):
     crop_id: int
     name: str
-    sensor_type: SensorTypeLiteral
+    sensor_type: SensorTypeLiteral  # type: ignore
 
 
 class UpdateSensorRequestDTO(BaseModel):
     name: Optional[str] = None
-    sensor_type: Optional[SensorTypeLiteral] = None
+    sensor_type: Optional[SensorTypeLiteral] = None  # type: ignore
     value: Optional[str] = None
 
 

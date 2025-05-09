@@ -1,7 +1,7 @@
 from typing import Optional, List
 from pydantic import BaseModel
 from dtos.base_dto import BaseResponseDTO, TimeMixin
-from dtos.comment_dto import CommentDTO
+from dtos.comment_dto import CommentDetailDTO
 
 
 class PostDTO(BaseModel):
@@ -16,7 +16,7 @@ class PostDTO(BaseModel):
 
 
 class PostDetailDTO(PostDTO, TimeMixin):
-    comments: List[CommentDTO]
+    comments: List[CommentDetailDTO]
 
 
 class AddPostRequestDTO(BaseModel):

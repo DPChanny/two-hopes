@@ -1,11 +1,11 @@
 import enum
-from sqlalchemy import Boolean, Column, ForeignKey, String, Integer
+from sqlalchemy import Boolean, Column, ForeignKey, String, Integer, Enum
 from sqlalchemy.orm import relationship
 from database import Base
 from entities.time_mixin import TimeMixin
 
 
-class CropType(enum.Enum):
+class CropType(str, enum.Enum):
     VEGETABLE = "vegetable"
     FRUIT = "fruit"
     GRAIN = "grain"
@@ -25,7 +25,7 @@ class Crop(Base, TimeMixin):
     )
 
     name = Column(String(256), nullable=False)
-    crop_type = Column(String(256), nullable=False)
+    crop_type = Column(Enum(CropType, native_enum=False), nullable=False)
     harvest = Column(Boolean, default=False, nullable=False)
 
     group = relationship("Group", back_populates="crops")

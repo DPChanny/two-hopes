@@ -5,7 +5,7 @@ from entities.time_mixin import TimeMixin
 import enum
 
 
-class Weekday(enum.Enum):
+class Weekday(str, enum.Enum):
     MON = "Mon"
     TUE = "Tue"
     WED = "Wed"
@@ -24,7 +24,7 @@ class Schedule(Base, TimeMixin):
         Integer, ForeignKey("crop.crop_id", ondelete="CASCADE"), nullable=False
     )
 
-    weekday = Column(Enum(Weekday), nullable=False)
+    weekday = Column(Enum(Weekday, native_enum=False), nullable=False)
     start_time = Column(Time, nullable=False)
     end_time = Column(Time, nullable=False)
     author = Column(String(256), nullable=False)

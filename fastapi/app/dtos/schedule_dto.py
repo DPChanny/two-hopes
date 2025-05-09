@@ -1,21 +1,27 @@
 from datetime import time
-from typing import Optional, List, Literal
-from pydantic import BaseModel
+from typing import Optional, List, Literal, get_args
+from enum import Enum
+from pydantic import BaseModel, field_serializer
 from dtos.base_dto import BaseResponseDTO, TimeMixin
+from entities.schedule import Weekday
 
-WeekdayLiteral = Literal["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+WeekdayLiteral = Literal[*(e.value for e in Weekday)]
 
 
 class ScheduleDTO(BaseModel):
     schedule_id: int
     crop_id: int
 
-    weekday: WeekdayLiteral
+    weekday: Weekday
     start_time: time
     end_time: time
     author: str
 
     model_config = {"from_attributes": True}
+
+    @field_serializer("weekday")
+    def serialize_weekday(self, value: Weekday):
+        return value.value
 
 
 class ScheduleDetailDTO(ScheduleDTO, TimeMixin):
@@ -24,14 +30,14 @@ class ScheduleDetailDTO(ScheduleDTO, TimeMixin):
 
 class AddScheduleRequestDTO(BaseModel):
     crop_id: int
-    weekday: WeekdayLiteral
+    weekday: WeekdayLiteral  # type: ignore
     start_time: time
     end_time: time
     author: str
 
 
 class UpdateScheduleRequestDTO(BaseModel):
-    weekday: Optional[WeekdayLiteral] = None
+    weekday: Optional[WeekdayLiteral] = None  # type: ignore
     start_time: Optional[time] = None
     end_time: Optional[time] = None
     author: Optional[str] = None

@@ -5,7 +5,7 @@ from entities.time_mixin import TimeMixin
 import enum
 
 
-class SensorType(enum.Enum):
+class SensorType(str, enum.Enum):
     TEMPERATURE = "temperature"
     HUMIDITY = "humidity"
     LIGHT = "light"
@@ -24,6 +24,6 @@ class Sensor(Base, TimeMixin):
 
     name = Column(String(256), nullable=False)
     value = Column(String(256), default="NaN", nullable=False)
-    sensor_type = Column(Enum(SensorType), nullable=False)
+    sensor_type = Column(Enum(SensorType, native_enum=False), nullable=False)
 
     crop = relationship("Crop", back_populates="sensors")
