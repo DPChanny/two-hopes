@@ -1,6 +1,6 @@
 from typing import List, Optional
 from pydantic import BaseModel
-from dtos.base_dto import BaseResponseDTO
+from dtos.base_dto import BaseResponseDTO, TimeMixin
 from dtos.crop_dto import CropDetailDTO
 
 
@@ -12,7 +12,7 @@ class GroupDTO(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class GroupDetailDTO(GroupDTO):
+class GroupDetailDTO(GroupDTO, TimeMixin):
     crops: list[CropDetailDTO]
 
 

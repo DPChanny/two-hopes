@@ -17,7 +17,9 @@ def add_sensor_service(
     dto: AddSensorRequestDTO, db: Session
 ) -> BaseResponseDTO[SensorDTO]:
     try:
-        sensor = Sensor(crop_id=dto.crop_id, name=dto.name, type=dto.type)
+        sensor = Sensor(
+            crop_id=dto.crop_id, name=dto.name, type=dto.sensor_type
+        )
         db.add(sensor)
         db.commit()
         db.refresh(sensor)

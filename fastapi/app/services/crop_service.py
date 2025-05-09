@@ -48,7 +48,7 @@ def add_crop_service(
     dto: AddCropRequestDTO, db: Session
 ) -> GetCropDetailResponseDTO:
     try:
-        crop = Crop(group_id=dto.group_id, name=dto.name, type=dto.type)
+        crop = Crop(group_id=dto.group_id, name=dto.name, type=dto.crop_type)
         db.add(crop)
         db.commit()
 

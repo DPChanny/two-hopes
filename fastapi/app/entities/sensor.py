@@ -1,16 +1,29 @@
-from sqlalchemy import Column, ForeignKey, String, Integer
+from sqlalchemy import Column, ForeignKey, String, Integer, Enum
 from sqlalchemy.orm import relationship
-
 from database import Base
+from entities.time_mixin import TimeMixin
+import enum
 
 
-class Sensor(Base):
+class SensorType(enum.Enum):
+    TEMPERATURE = "temperature"
+    HUMIDITY = "humidity"
+    LIGHT = "light"
+    PH = "ph"
+    CO2 = "co2"
+
+
+class Sensor(Base, TimeMixin):
     __tablename__ = "sensor"
 
     sensor_id = Column(Integer, primary_key=True, autoincrement=True)
-    crop_id = Column(Integer, ForeignKey("crop.crop_id"))
-    name = Column(String(256))
-    value = Column(String(256), default="NaN")
-    type = Column(String(256))
+
+    crop_id = Column(
+        Integer, ForeignKey("crop.crop_id", ondelete="CASCADE"), nullable=False
+    )
+
+    name = Column(String(256), nullable=False)
+    value = Column(String(256), default="NaN", nullable=False)
+    sensor_type = Column(Enum(SensorType), nullable=False)
 
     crop = relationship("Crop", back_populates="sensors")

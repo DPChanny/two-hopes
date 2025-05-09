@@ -1,8 +1,6 @@
 from typing import List, Optional
 from pydantic import BaseModel
-from datetime import datetime
-
-from dtos.base_dto import BaseResponseDTO
+from dtos.base_dto import BaseResponseDTO, TimeMixin
 
 
 class CommentDTO(BaseModel):
@@ -10,9 +8,12 @@ class CommentDTO(BaseModel):
     post_id: int
     content: str
     author: str
-    created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class CommentDetailDTO(CommentDTO, TimeMixin):
+    pass
 
 
 class AddCommentRequestDTO(BaseModel):
@@ -30,4 +31,8 @@ class GetCommentListRequestDTO(BaseModel):
 
 
 class GetCommentListResponseDTO(BaseResponseDTO[List[CommentDTO]]):
+    pass
+
+
+class GetCommentDetailResponseDTO(BaseResponseDTO[CommentDetailDTO]):
     pass
