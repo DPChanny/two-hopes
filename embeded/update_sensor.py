@@ -6,8 +6,8 @@ import serial
 import requests
 
 
-def load_config(path):
-    with open(path, "r") as f:
+def load_config(config_path):
+    with open(config_path, "r") as f:
         config = json.load(f)
     required = ["crop_id", "com", "pins"]
     for key in required:
@@ -42,7 +42,7 @@ def listen_serial(com: str, api_base_url: str, baud: int = 9600):
     print(f"🔌 Waiting for serial on {com}...")
     try:
         with serial.Serial(com, baud, timeout=2) as ser:
-            print(f"✅ Connected to {com} ({baud} baud)")
+            print(f"Connected to {com} ({baud} baud)")
             while True:
                 try:
                     line = ser.readline().decode("utf-8").strip()
@@ -61,7 +61,9 @@ def main():
     parser = argparse.ArgumentParser(
         description="Listen to serial and update server based on config.json"
     )
-    parser.add_argument("--config", required=True, help="Path to config.json")
+    parser.add_argument(
+        "--config-path", required=True, help="Path to config.json"
+    )
     parser.add_argument(
         "--api-base-url",
         default="http://3.26.202.82:8000/api/",
@@ -69,7 +71,7 @@ def main():
     )
 
     args = parser.parse_args()
-    config = load_config(args.config)
+    config = load_config(args.config_path)
     listen_serial(config["com"], args.api_base_url)
 
 

@@ -5,19 +5,19 @@ import json
 import os
 
 
-def load_config(path):
-    with open(path, "r") as f:
+def load_config(config_path):
+    with open(config_path, "r") as f:
         config = json.load(f)
     required = ["crop_id", "com", "board", "pins"]
     for key in required:
         if key not in config:
-            raise ValueError(f"Missing config key: '{key}'")
+            raise ValueError(f"Missing config key: '{key}' in {config_path}")
     return config
 
 
-def write_arduino_file(sensors, sketch_dir):
-    os.makedirs(sketch_dir, exist_ok=True)
-    ino_path = os.path.join(sketch_dir, "main.ino")
+def generate_sketch(sensors, sketch_path):
+    os.makedirs(sketch_path, exist_ok=True)
+    ino_path = os.path.join(sketch_path, "main.ino")
 
     dht_pins = sorted({s["dht_pin"] for s in sensors if "dht_pin" in s})
     lines = []
@@ -82,16 +82,18 @@ def main():
     parser = argparse.ArgumentParser(
         description="Generate main.ino from config.json"
     )
-    parser.add_argument("--config", required=True, help="Path to config.json")
+    parser.add_argument("--config-path", help="Path to config.json")
     parser.add_argument(
         "--output", required=True, help="Directory to write sketch"
     )
     args = parser.parse_args()
 
-    config = load_config(args.config)
+    config_path = args.config_path or os.path.join(args.output, "config.json")
+    config = load_config(config_path)
+
     sensors = config["pins"]
-    sketch_dir = os.path.join(args.output, "main")
-    write_arduino_file(sensors, sketch_dir)
+    sketch_path = os.path.join(args.output, "main")
+    generate_sketch(sensors, sketch_path)
 
 
 if __name__ == "__main__":
