@@ -66,6 +66,13 @@
   gap: 10px;
 }
 
+.crop-detail-title-p {
+  display: flex;
+}
+.crop-detail-post-add {
+  width: 1200px;
+}
+
 .crop-detail-title h2 {
   font-size: 64px;
   font-weight: 700;

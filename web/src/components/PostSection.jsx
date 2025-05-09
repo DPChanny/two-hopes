@@ -12,7 +12,7 @@ const PostSection = ({ posts, cropId, onPostAdded }) => {
   };
 
   return (
-    <div className="crop-posts-section">
+    <div className="crop-posts-sec">
       <div className="post-section-header">
         <IoMdDocument
           size={30}

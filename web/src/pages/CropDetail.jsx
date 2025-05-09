@@ -107,12 +107,15 @@ const CropDetail = () => {
       <div className="crop-detail-divider"></div>
       <div className="crop-detail-title">
         <h2>{name}</h2>
-        <p>{harvest ? "수확 완료" : "미수확"}</p>
-        <PostSection
-          posts={posts}
-          cropId={cropId}
-          onPostAdded={handleNewPost}
-        />
+        <div className="crop-detail-title-p">
+          <p>{harvest ? "수확 완료" : "미수확"}</p>
+          <PostSection
+            posts={posts}
+            cropId={cropId}
+            onPostAdded={handleNewPost}
+            className="crop-detail-post-add"
+          />
+        </div>
       </div>
       <div className="crop-detail-content">
         <div className="crop-status-section">
