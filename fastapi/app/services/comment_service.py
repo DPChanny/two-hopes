@@ -6,6 +6,7 @@ from dtos.comment_dto import (
     CommentDTO,
     CommentDetailDTO,
     AddCommentRequestDTO,
+    GetCommentListRequestDTO,
     UpdateCommentRequestDTO,
     GetCommentDetailResponseDTO,
     GetCommentListResponseDTO,
@@ -58,12 +59,12 @@ def add_comment_service(
 
 
 def get_comment_list_service(
-    post_id: Optional[int], db: Session
+    dto: GetCommentListRequestDTO, db: Session
 ) -> GetCommentListResponseDTO:
     try:
         query = db.query(Comment)
-        if post_id:
-            query = query.filter(Comment.post_id == post_id)
+        if dto.post_id:
+            query = query.filter(Comment.post_id == dto.post_id)
 
         comment_entities = query.all()
         comment_dtos = [CommentDTO.model_validate(c) for c in comment_entities]

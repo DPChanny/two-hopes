@@ -13,6 +13,7 @@
   border-right: 1px solid #ccc;
   background-color: #f9f9f9;
   position: relative;
+  margin-top: 25px;
   z-index: 1;
 }
 
@@ -31,10 +32,12 @@
   border-right: 1px solid #eee;
   background-color: #fff;
   z-index: 0;
+  margin-top: 25px;
 }
 
 .day-label {
   position: absolute;
+  margin-top: -25px;
   top: 0;
   left: 0;
   width: 100%;
@@ -55,7 +58,6 @@
   background-color: #eee;
   z-index: 0;
 }
-
 .schedule-block {
   position: absolute;
   left: 5%;
@@ -69,6 +71,7 @@
   z-index: 3;
   cursor: move;
   overflow: hidden;
+  min-height: 10px; /* 🔧 최소 높이 확보 */
 }
 
 .resize-handle {
@@ -77,7 +80,7 @@
   left: 0;
   width: 100%;
   height: 6px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(86, 116, 41, 0.8);
   cursor: ns-resize;
   z-index: 4;
 }

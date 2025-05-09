@@ -7,13 +7,14 @@ const CommentSection = ({ postId }) => {
   const [comments, setComments] = useState([]);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
+  const [authorName, setAuthorName] = useState(""); // 🆕
 
   useEffect(() => {
     api
       .get("/api/comment/", { params: { post_id: postId } })
       .then((res) => setComments(res.data.data))
       .catch((err) => console.error("댓글 불러오기 실패:", err));
-  }, [postId]); // ✅ showComments는 제거
+  }, [postId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,10 +23,11 @@ const CommentSection = ({ postId }) => {
       const res = await api.post("/api/comment/", {
         post_id: postId,
         content: newComment,
-        author: "익명",
+        author: authorName.trim() || "익명", // 🆕
       });
       setComments((prev) => [...prev, res.data.data]);
       setNewComment("");
+      setAuthorName(""); // 🆕 작성 후 초기화
     } catch (err) {
       console.error("댓글 추가 실패:", err);
     }
@@ -46,6 +48,12 @@ const CommentSection = ({ postId }) => {
           <form onSubmit={handleSubmit} className="comment-input">
             <input
               type="text"
+              placeholder="작성자 이름"
+              value={authorName}
+              onChange={(e) => setAuthorName(e.target.value)}
+            />
+            <input
+              type="text"
               placeholder="댓글 입력"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
@@ -56,9 +64,9 @@ const CommentSection = ({ postId }) => {
             {comments.length > 0 ? (
               comments.map((c, index) => (
                 <div key={c.comment_id} className="comments-list-item">
-                  <b>익명{index + 1}</b>
+                  <b>{c.author || `익명${index + 1}`}</b>
                   <div className="vertical-line" />
-                  {c.content}
+                  <span>{c.content}</span>
                 </div>
               ))
             ) : (
