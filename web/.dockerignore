@@ -1,0 +1,23 @@
+# Node dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+.pnpm-store
+
+# Git-related
+.git
+.gitignore
+
+# Test coverage or build artifacts
+coverage
+*.log
+
+# Output directories
+.next
+dist
+out
+build
+
+# Docker-related
+Dockerfile
+.dockerignore

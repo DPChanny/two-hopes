@@ -52,12 +52,6 @@ const CropDetail = () => {
           </div>
         ))}
       </div>
-      <div
-        className="reserve-btn"
-        onClick={() => navigate(`/crop/${cropId}/schedular`)}
-      >
-        예약하기
-      </div>
     </div>
   );
 };
