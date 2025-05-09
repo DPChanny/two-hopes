@@ -1,5 +1,5 @@
 // Scheduler.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../axiosConfig";
 import "../styles/Scheduler.css";
@@ -7,8 +7,6 @@ import "../styles/Scheduler.css";
 const WEEKDAYS = ["월", "화", "수", "목", "금", "토", "일"];
 const START_HOUR = 0;
 const END_HOUR = 24;
-const TIMELINE_HEIGHT = 600;
-const PIXEL_PER_MINUTE = TIMELINE_HEIGHT / ((END_HOUR - START_HOUR) * 60);
 const WEEKDAY_STR_TO_INDEX = {
   Mon: 0,
   Tue: 1,
@@ -59,6 +57,22 @@ export default function Scheduler() {
   const { id } = useParams();
   const cropId = parseInt(id);
 
+  const [columnWidth, setColumnWidth] = useState(40);
+  const [timelineHeight, setTimelineHeight] = useState(600);
+  const PIXEL_PER_MINUTE = timelineHeight / ((END_HOUR - START_HOUR) * 60);
+
+  const dayColumnRef = useRef(null);
+  const timeColumnRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if (dayColumnRef.current && timeColumnRef.current) {
+      const dayRect = dayColumnRef.current.getBoundingClientRect();
+      const timeRect = timeColumnRef.current.getBoundingClientRect();
+      setColumnWidth(dayRect.width);
+      setTimelineHeight(timeRect.height);
+    }
+  }, []);
+
   useEffect(() => {
     axios.get(`/api/schedule/?crop_id=${cropId}`).then((res) => {
       const data = res.data.data ?? [];
@@ -86,7 +100,7 @@ export default function Scheduler() {
       const deltaMin = Math.round(
         (e.clientY - dragInfo.startY) / PIXEL_PER_MINUTE
       );
-      const dayDelta = Math.floor((e.clientX - dragInfo.startX) / 120);
+      const dayDelta = Math.floor((e.clientX - dragInfo.startX) / columnWidth);
 
       setSchedules((prev) =>
         prev.map((s) => {
@@ -125,7 +139,7 @@ export default function Scheduler() {
       const deltaMin = Math.round(
         (e.clientY - dragInfo.startY) / PIXEL_PER_MINUTE
       );
-      const dayDelta = Math.floor((e.clientX - dragInfo.startX) / 120);
+      const dayDelta = Math.floor((e.clientX - dragInfo.startX) / columnWidth);
 
       const start =
         dragInfo.originalTop + (dragInfo.type === "move" ? deltaMin : 0);
@@ -157,7 +171,6 @@ export default function Scheduler() {
         );
       } else {
         try {
-          console.log("hi");
           await axios.patch(`/api/schedule/${updated.schedule_id}`, {
             weekday: WEEKDAY_INDEX_TO_STR[updated.weekday],
             start_time: updated.start_time,
@@ -178,8 +191,8 @@ export default function Scheduler() {
       const { startY, currentY, dayIndex } = drawInfo;
       const y1 = Math.min(startY, currentY);
       const y2 = Math.max(startY, currentY);
-      const startMinutes = Math.round((y1 / TIMELINE_HEIGHT) * 1440);
-      const endMinutes = Math.round((y2 / TIMELINE_HEIGHT) * 1440);
+      const startMinutes = Math.round((y1 / timelineHeight) * 1440);
+      const endMinutes = Math.round((y2 / timelineHeight) * 1440);
       const startTime = toTimeString(startMinutes);
       const endTime = toTimeString(endMinutes);
       const author = window.prompt(
@@ -236,9 +249,9 @@ export default function Scheduler() {
     <div
       className="scheduler"
       onMouseMove={handleMouseMove}
-      onMouseUp={(e) => handleMouseUp(e)} // `e` 전달
+      onMouseUp={handleMouseUp}
     >
-      <div className="time-column">
+      <div className="time-column" ref={timeColumnRef}>
         {timeLabels.map((label) => (
           <div key={label} className="time-label">
             {label}
@@ -251,7 +264,8 @@ export default function Scheduler() {
           key={day}
           className="day-column"
           data-day={col}
-          onMouseDown={(e) => handleColumnDown(e, col)} // `e` 전달
+          ref={col === 0 ? dayColumnRef : null}
+          onMouseDown={(e) => handleColumnDown(e, col)}
         >
           <div className="day-label">{day}</div>
           {timeLabels.map((_, idx) => (
@@ -285,14 +299,14 @@ export default function Scheduler() {
                   key={s.schedule_id}
                   className={`schedule-block${conflict ? " conflict" : ""}`}
                   style={{ top: `${top}px`, height: `${height}px` }}
-                  onMouseDown={(e) => handleMouseDown(e, s, "move")} // `e` 전달
+                  onMouseDown={(e) => handleMouseDown(e, s, "move")}
                   onDoubleClick={() => handleClick(s)}
                   title={`${s.author}: ${s.start_time}~${s.end_time}`}
                 >
                   {s.author}
                   <div
                     className="resize-handle"
-                    onMouseDown={(e) => handleMouseDown(e, s, "resize")} // `e` 전달
+                    onMouseDown={(e) => handleMouseDown(e, s, "resize")}
                   />
                 </div>
               );
