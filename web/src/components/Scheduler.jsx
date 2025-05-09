@@ -18,6 +18,11 @@ const WEEKDAY_STR_TO_INDEX = {
 };
 const WEEKDAY_INDEX_TO_STR = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+const SNAP_MINUTES = 30;
+function snapTo(minutes) {
+  return Math.round(minutes / SNAP_MINUTES) * SNAP_MINUTES;
+}
+
 function timeToMinutes(t) {
   const [h, m] = t.split(":").map(Number);
   return h * 60 + m;
@@ -97,9 +102,7 @@ export default function Scheduler() {
 
   const handleMouseMove = (e) => {
     if (dragInfo) {
-      const deltaMin = Math.round(
-        (e.clientY - dragInfo.startY) / PIXEL_PER_MINUTE
-      );
+      const deltaMin = snapTo((e.clientY - dragInfo.startY) / PIXEL_PER_MINUTE);
       const dayDelta = Math.floor((e.clientX - dragInfo.startX) / columnWidth);
 
       setSchedules((prev) =>
@@ -109,12 +112,12 @@ export default function Scheduler() {
           let end = dragInfo.originalBottom;
           let weekday = dragInfo.originalWeekday + dayDelta;
           if (dragInfo.type === "move") {
-            start += deltaMin;
-            end += deltaMin;
+            start = snapTo(start + deltaMin);
+            end = snapTo(end + deltaMin);
           } else if (dragInfo.type === "resize") {
-            end += deltaMin;
+            end = snapTo(end + deltaMin);
           }
-          if (end <= start) end = start + 1;
+          if (end <= start) end = start + SNAP_MINUTES;
           const updated = {
             ...s,
             start_time: toTimeString(Math.max(start, 0)),
@@ -136,14 +139,13 @@ export default function Scheduler() {
 
   const handleMouseUp = async (e) => {
     if (dragInfo) {
-      const deltaMin = Math.round(
-        (e.clientY - dragInfo.startY) / PIXEL_PER_MINUTE
-      );
+      const deltaMin = snapTo((e.clientY - dragInfo.startY) / PIXEL_PER_MINUTE);
       const dayDelta = Math.floor((e.clientX - dragInfo.startX) / columnWidth);
 
-      const start =
-        dragInfo.originalTop + (dragInfo.type === "move" ? deltaMin : 0);
-      const end = dragInfo.originalBottom + deltaMin;
+      const start = snapTo(
+        dragInfo.originalTop + (dragInfo.type === "move" ? deltaMin : 0)
+      );
+      const end = snapTo(dragInfo.originalBottom + deltaMin);
       const weekday = Math.max(
         0,
         Math.min(6, dragInfo.originalWeekday + dayDelta)
@@ -191,12 +193,12 @@ export default function Scheduler() {
       const { startY, currentY, dayIndex } = drawInfo;
       const y1 = Math.min(startY, currentY);
       const y2 = Math.max(startY, currentY);
-      const startMinutes = Math.round((y1 / timelineHeight) * 1440);
-      const endMinutes = Math.round((y2 / timelineHeight) * 1440);
+      const startMinutes = snapTo((y1 / timelineHeight) * 1440);
+      const endMinutes = snapTo((y2 / timelineHeight) * 1440);
       const startTime = toTimeString(startMinutes);
       const endTime = toTimeString(endMinutes);
       const author = window.prompt(
-        `새 스케줄 추가 (${WEEKDAYS[dayIndex]} ${startTime} ~ ${endTime})\n작성자 이름을 입력하세요:`
+        `새 스컷 추가 (${WEEKDAYS[dayIndex]} ${startTime} ~ ${endTime})\n작성자 이름을 입력하세요:`
       );
       if (author && author.trim()) {
         try {
@@ -252,8 +254,12 @@ export default function Scheduler() {
       onMouseUp={handleMouseUp}
     >
       <div className="time-column" ref={timeColumnRef}>
-        {timeLabels.map((label) => (
-          <div key={label} className="time-label">
+        {timeLabels.map((label, idx) => (
+          <div
+            key={label}
+            className="time-label"
+            style={{ top: `${idx * 60 * PIXEL_PER_MINUTE}px` }}
+          >
             {label}
           </div>
         ))}
@@ -272,7 +278,7 @@ export default function Scheduler() {
             <div
               key={idx}
               className="hour-line"
-              style={{ top: `${idx * 25}px` }}
+              style={{ top: `${idx * 60 * PIXEL_PER_MINUTE}px` }}
             />
           ))}
 
