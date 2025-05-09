@@ -5,6 +5,7 @@ import SearchBar from "../components/SearchBar";
 import { groups } from "../data/dummyData";
 import { BiMap } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import AddBtn from "../components/AddBtn";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -13,19 +14,22 @@ const Main = () => {
     <div className="main">
       <Header />
       <SearchBar />
-      {groups.map((group) => (
-        <div
-          key={group.id}
-          className="group-card"
-          onClick={() => navigate(`/group/${group.id}`)}
-        >
-          <h2>{group.title}</h2>
-          <div className="group-location">
-            <BiMap />
-            <p>{group.location}</p>
+      <div className="group-container">
+        {groups.map((group) => (
+          <div
+            key={group.id}
+            className="group-card"
+            onClick={() => navigate(`/group/${group.id}`)}
+          >
+            <h1>{group.title}</h1>
+            <div className="group-location">
+              <BiMap size={35} />
+              <p>{group.location}</p>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
+      <AddBtn />
     </div>
   );
 };

@@ -2,6 +2,9 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { groups } from "../data/dummyData";
 import { BiMap } from "react-icons/bi";
+import { LuLeaf } from "react-icons/lu";
+import "../styles/GroupDetail.css";
+import AddBtn from "../components/AddBtn";
 
 const GroupDetail = () => {
   const navigate = useNavigate();
@@ -24,20 +27,26 @@ const GroupDetail = () => {
   return (
     <div className="group-detail">
       <h2>{group.title}</h2>
-      <div className="group-location">
-        <BiMap />
+      <div className="group-detail-location">
+        <BiMap size={35} />
         <p>{group.location}</p>
       </div>
-      {group.crops?.map((crop) => (
-        <div
-          key={crop.id}
-          className="crop-card"
-          onClick={() => navigate(`/crop/${crop.id}`)}
-        >
-          <p>{crop.name}</p>
-          <p>{crop.status}</p>
-        </div>
-      ))}
+      <div className="crop-container">
+        {group.crops?.map((crop) => (
+          <div
+            key={crop.id}
+            className="crop-card"
+            onClick={() => navigate(`/crop/${crop.id}`)}
+          >
+            <div className="crop-title">
+              <LuLeaf size={35} />
+              <p>{crop.name}</p>
+            </div>
+            <div className="crop-status">{crop.status}</div>
+          </div>
+        ))}
+      </div>
+      <AddBtn />
     </div>
   );
 };

@@ -1,12 +1,15 @@
 .searchbar {
   display: flex;
+  box-sizing: border-box;
   align-items: center;
   justify-content: center;
   width: 821px;
-  height: 58px;
+  height: 48px;
   border-radius: 20px;
-
-  background-color: lightgray;
+  border: 1px solid #000;
+  background: #fff;
+  padding: 14px 20px;
+  margin-top: 15px;
 }
 
 .searchbar > input {
