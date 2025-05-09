@@ -1,7 +1,8 @@
 from typing import Optional, List
 from pydantic import BaseModel
-from dtos.base_dto import BaseResponseDTO
 from datetime import datetime
+from dtos.base_dto import BaseResponseDTO
+from dtos.comment_dto import CommentDTO
 
 
 class PostDTO(BaseModel):
@@ -12,6 +13,10 @@ class PostDTO(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class PostDetailDTO(PostDTO):
+    comments: List[CommentDTO]
 
 
 class AddPostRequestDTO(BaseModel):
@@ -31,4 +36,8 @@ class GetPostListRequestDTO(BaseModel):
 
 
 class GetPostListResponseDTO(BaseResponseDTO[List[PostDTO]]):
+    pass
+
+
+class GetPostDetailResponseDTO(BaseResponseDTO[PostDetailDTO]):
     pass

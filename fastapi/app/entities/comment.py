@@ -12,4 +12,4 @@ class Comment(Base):
     text = Column(Text)
     time = Column(DateTime)
 
-    post = relationship("Post")
+    post = relationship("Post", back_populates="comments")
