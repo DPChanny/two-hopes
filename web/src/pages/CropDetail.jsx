@@ -12,6 +12,7 @@ import AddFormModal from "../components/AddFormModal.jsx";
 const CropDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const cropId = parseInt(id);
   const [crop, setCrop] = useState(null);
   const [error, setError] = useState("");
   const [groupLocation, setGroupLocation] = useState("");
@@ -50,19 +51,17 @@ const CropDetail = () => {
 
     fetchCropAndGroup();
   }, [id]);
-
+  const fetchSensors = async () => {
+    try {
+      const res = await api.get("/api/sensor/", {
+        params: { crop_id: id },
+      });
+      setSensors(res.data.data);
+    } catch (err) {
+      console.error("센서 정보 조회 실패:", err);
+    }
+  };
   useEffect(() => {
-    const fetchSensors = async () => {
-      try {
-        const res = await api.get("/api/sensor/", {
-          params: { crop_id: id },
-        });
-        setSensors(res.data.data);
-      } catch (err) {
-        console.error("센서 정보 조회 실패:", err);
-      }
-    };
-
     fetchSensors();
     const interval = setInterval(fetchSensors, 1000);
     return () => clearInterval(interval);
@@ -104,7 +103,12 @@ const CropDetail = () => {
       </div>
       <AddBtn onClick={() => setShowAddModal(true)} />
       {showAddModal && (
-        <AddFormModal type="sensor" onClose={() => setShowAddModal(false)} />
+        <AddFormModal
+          type="sensor"
+          cropId={cropId}
+          onSensorAdded={fetchSensors}
+          onClose={() => setShowAddModal(false)}
+        />
       )}
       <div className="crop-posts-section">
         {posts.map((post) => (
