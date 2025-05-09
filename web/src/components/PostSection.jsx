@@ -1,6 +1,6 @@
 // components/PostSection.jsx
 import React, { useState } from "react";
-import { TfiWrite } from "react-icons/tfi";
+import { IoMdDocument } from "react-icons/io";
 import AddFormModal from "./AddFormModal";
 
 const PostSection = ({ posts, cropId, onPostAdded }) => {
@@ -14,8 +14,8 @@ const PostSection = ({ posts, cropId, onPostAdded }) => {
   return (
     <div className="crop-posts-section">
       <div className="post-section-header">
-        <TfiWrite
-          size={24}
+        <IoMdDocument
+          size={30}
           className="write-icon"
           onClick={() => setShowForm((prev) => !prev)}
           style={{ cursor: "pointer" }}
@@ -23,7 +23,12 @@ const PostSection = ({ posts, cropId, onPostAdded }) => {
       </div>
 
       {showForm && (
-        <AddFormModal cropId={cropId} onPostAdded={handlePostAdded} />
+        <AddFormModal
+          type="post"
+          cropId={cropId}
+          onPostAdded={handlePostAdded}
+          onClose={() => setShowForm(false)}
+        />
       )}
     </div>
   );

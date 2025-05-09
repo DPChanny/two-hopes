@@ -130,7 +130,7 @@ const AddFormModal = ({
                 onChange={(selectedOption) => setCropType(selectedOption)}
               />
             </div>
-          ) : (
+          ) : type === "sensor" ? (
             <div className="form-content-frame">
               <label className="form-label">‣ 센서 이름</label>
               <input
@@ -148,28 +148,30 @@ const AddFormModal = ({
                 onChange={(selectedOption) => setSensorType(selectedOption)}
               />
             </div>
-          )}
-          {type === "post" && (
-            <>
+          ) : (
+            <div className="form-content-frame">
               <input
                 type="text"
                 placeholder="작성자 이름"
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
+                className="form-input"
               />
               <input
                 type="text"
                 placeholder="이미지 URL"
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
+                className="form-input"
               />
               <input
                 type="text"
                 placeholder="게시글 내용"
                 value={postContent}
                 onChange={(e) => setPostContent(e.target.value)}
+                className="form-input"
               />
-            </>
+            </div>
           )}
         </AddForm>
       </div>

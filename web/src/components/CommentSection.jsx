@@ -64,7 +64,7 @@ const CommentSection = ({ postId }) => {
             {comments.length > 0 ? (
               comments.map((c, index) => (
                 <div key={c.comment_id} className="comments-list-item">
-                  <b>{c.author || `익명${index + 1}`}</b>
+                  <b>{c.author}</b>
                   <div className="vertical-line" />
                   <span>{c.content}</span>
                 </div>
