@@ -9,8 +9,7 @@ class SensorType(str, enum.Enum):
     TEMPERATURE = "temperature"
     HUMIDITY = "humidity"
     LIGHT = "light"
-    PH = "ph"
-    CO2 = "co2"
+    WATER = "water"
 
 
 class Sensor(Base, TimeMixin):

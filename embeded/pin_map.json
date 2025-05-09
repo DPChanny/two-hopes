@@ -1,10 +1,17 @@
 [
   {
-    "pin": "A0",
-    "sensor_id": 1
+    "sensor_id": 1,
+    "sensor_type": "temperature",
+    "dht_pin": 8
   },
   {
-    "pin": "A1",
-    "sensor_id": 2
+    "sensor_id": 2,
+    "sensor_type": "humidity",
+    "dht_pin": 8
+  },
+  {
+    "sensor_id": 3,
+    "sensor_type": "light",
+    "pin": "A0"
   }
 ]
