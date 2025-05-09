@@ -9,6 +9,8 @@ import "../styles/CropDetail.css";
 import AddBtn from "../components/AddBtn";
 import AddFormModal from "../components/AddFormModal.jsx";
 import CommentSection from "../components/CommentSection";
+import { TfiWrite } from "react-icons/tfi";
+import PostSection from "../components/PostSection"; // ✅ [추가] 포스트 관련 UI 컴포넌트
 
 const CropDetail = () => {
   const navigate = useNavigate();
@@ -20,6 +22,7 @@ const CropDetail = () => {
   const [groupName, setGroupName] = useState("");
   const [sensors, setSensors] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showPostModal, setShowPostModal] = useState(false); // ✅ [추가] 게시글 작성 모달
 
   const unitMap = {
     temperature: "°C",
@@ -71,6 +74,14 @@ const CropDetail = () => {
     return () => clearInterval(interval);
   }, [id]);
 
+  // ✅ [추가] 새 게시글을 crop state에 반영
+  const handleNewPost = (newPost) => {
+    setCrop((prev) => ({
+      ...prev,
+      posts: [newPost, ...prev.posts],
+    }));
+  };
+
   if (error) {
     return (
       <div>
@@ -97,6 +108,12 @@ const CropDetail = () => {
       <div className="crop-detail-title">
         <h2>{name}</h2>
         <p>{harvest ? "수확 완료" : "미수확"}</p>
+
+        <PostSection
+          posts={posts}
+          cropId={cropId}
+          onPostAdded={handleNewPost}
+        />
       </div>
       <div className="crop-detail-content">
         <div className="crop-status-section">
@@ -117,6 +134,7 @@ const CropDetail = () => {
             />
           )}
         </div>
+
         <div className="crop-posts-section">
           <div className="crop-posts">
             {posts.map((post) => (
