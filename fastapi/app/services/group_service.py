@@ -14,6 +14,7 @@ from dtos.group_dto import (
 from entities.group import Group
 from entities.crop import Crop
 from exception import CustomException, handle_exception
+from dtos.base_dto import BaseResponseDTO
 
 
 def get_group_detail_service(
@@ -97,6 +98,26 @@ def update_group_service(
         db.commit()
 
         return get_group_detail_service(group.group_id, db)
+
+    except Exception as e:
+        handle_exception(e, db)
+
+
+def delete_group_service(group_id: int, db: Session) -> BaseResponseDTO[None]:
+    try:
+        group = db.query(Group).filter(Group.group_id == group_id).first()
+        if not group:
+            raise CustomException(404, "Group not found.")
+
+        db.delete(group)
+        db.commit()
+
+        return BaseResponseDTO(
+            success=True,
+            code=200,
+            message="Group and all related entities deleted successfully.",
+            data=None,
+        )
 
     except Exception as e:
         handle_exception(e, db)

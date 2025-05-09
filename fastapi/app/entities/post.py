@@ -15,3 +15,7 @@ class Post(Base):
     user_name = Column(String(256))
 
     crop = relationship("Crop", back_populates="posts")
+
+    comments = relationship(
+        "Comment", back_populates="post", cascade="all, delete-orphan"
+    )

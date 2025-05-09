@@ -11,6 +11,7 @@ from dtos.sensor_dto import (
 from dtos.base_dto import BaseResponseDTO
 from services.sensor_service import (
     add_sensor_service,
+    delete_sensor_service,
     get_sensor_list_service,
     update_sensor_service,
 )
@@ -39,3 +40,8 @@ def update_sensor_route(
     sensor_id: int, dto: UpdateSensorRequestDTO, db: Session = Depends(get_db)
 ):
     return update_sensor_service(sensor_id, dto, db)
+
+
+@sensor_router.delete("/{sensor_id}", response_model=BaseResponseDTO[None])
+def delete_sensor_route(sensor_id: int, db: Session = Depends(get_db)):
+    return delete_sensor_service(sensor_id, db)

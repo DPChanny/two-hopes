@@ -12,6 +12,7 @@ from dtos.crop_dto import (
 )
 from entities.crop import Crop
 from exception import CustomException, handle_exception
+from dtos.base_dto import BaseResponseDTO
 
 
 def get_crop_detail_service(
@@ -94,6 +95,26 @@ def update_crop_service(
         db.commit()
 
         return get_crop_detail_service(crop.crop_id, db)
+
+    except Exception as e:
+        handle_exception(e, db)
+
+
+def delete_crop_service(crop_id: int, db: Session) -> BaseResponseDTO[None]:
+    try:
+        crop = db.query(Crop).filter(Crop.crop_id == crop_id).first()
+        if not crop:
+            raise CustomException(404, "Crop not found.")
+
+        db.delete(crop)
+        db.commit()
+
+        return BaseResponseDTO(
+            success=True,
+            code=200,
+            message="Crop and all related data deleted successfully.",
+            data=None,
+        )
 
     except Exception as e:
         handle_exception(e, db)

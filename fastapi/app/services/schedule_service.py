@@ -96,3 +96,29 @@ def update_schedule_service(
 
     except Exception as e:
         handle_exception(e, db)
+
+
+def delete_schedule_service(
+    schedule_id: int, db: Session
+) -> BaseResponseDTO[None]:
+    try:
+        schedule = (
+            db.query(Schedule)
+            .filter(Schedule.schedule_id == schedule_id)
+            .first()
+        )
+        if not schedule:
+            raise CustomException(404, "Schedule not found.")
+
+        db.delete(schedule)
+        db.commit()
+
+        return BaseResponseDTO(
+            success=True,
+            code=200,
+            message="Schedule deleted successfully.",
+            data=None,
+        )
+
+    except Exception as e:
+        handle_exception(e, db)

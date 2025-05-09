@@ -8,8 +8,10 @@ from dtos.crop_dto import (
     GetCropListResponseDTO,
     UpdateCropRequestDTO,
 )
+from dtos.base_dto import BaseResponseDTO
 from services.crop_service import (
     add_crop_service,
+    delete_crop_service,
     get_crop_list_service,
     get_crop_detail_service,
     update_crop_service,
@@ -41,3 +43,8 @@ def update_crop_route(
     crop_id: int, dto: UpdateCropRequestDTO, db: Session = Depends(get_db)
 ):
     return update_crop_service(crop_id, dto, db)
+
+
+@crop_router.delete("/{crop_id}", response_model=BaseResponseDTO[None])
+def delete_crop_route(crop_id: int, db: Session = Depends(get_db)):
+    return delete_crop_service(crop_id, db)

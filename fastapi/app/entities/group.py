@@ -11,4 +11,6 @@ class Group(Base):
     name = Column(String(256))
     location = Column(String(256))
 
-    crops = relationship("Crop", back_populates="group")
+    crops = relationship(
+        "Crop", back_populates="group", cascade="all, delete-orphan"
+    )

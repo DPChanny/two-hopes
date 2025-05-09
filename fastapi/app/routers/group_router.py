@@ -8,8 +8,10 @@ from dtos.group_dto import (
     GetGroupListRequestDTO,
     UpdateGroupRequestDTO,
 )
+from dtos.base_dto import BaseResponseDTO
 from services.group_service import (
     add_group_service,
+    delete_group_service,
     get_group_list_service,
     get_group_detail_service,
     update_group_service,
@@ -44,3 +46,8 @@ def update_group_route(
     group_id: int, dto: UpdateGroupRequestDTO, db: Session = Depends(get_db)
 ):
     return update_group_service(group_id, dto, db)
+
+
+@group_router.delete("/{group_id}", response_model=BaseResponseDTO[None])
+def delete_group_route(group_id: int, db: Session = Depends(get_db)):
+    return delete_group_service(group_id, db)

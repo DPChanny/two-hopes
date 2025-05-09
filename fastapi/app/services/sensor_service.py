@@ -81,3 +81,23 @@ def update_sensor_service(
 
     except Exception as e:
         handle_exception(e, db)
+
+
+def delete_sensor_service(sensor_id: int, db: Session) -> BaseResponseDTO[None]:
+    try:
+        sensor = db.query(Sensor).filter(Sensor.sensor_id == sensor_id).first()
+        if not sensor:
+            raise CustomException(404, "Sensor not found.")
+
+        db.delete(sensor)
+        db.commit()
+
+        return BaseResponseDTO(
+            success=True,
+            code=200,
+            message="Sensor deleted successfully.",
+            data=None,
+        )
+
+    except Exception as e:
+        handle_exception(e, db)

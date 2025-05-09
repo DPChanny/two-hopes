@@ -11,6 +11,7 @@ from dtos.schedule_dto import (
 from dtos.base_dto import BaseResponseDTO
 from services.schedule_service import (
     add_schedule_service,
+    delete_schedule_service,
     get_schedule_list_service,
     update_schedule_service,
 )
@@ -43,3 +44,8 @@ def update_schedule_route(
     schedule: int, dto: UpdateScheduleRequestDTO, db: Session = Depends(get_db)
 ):
     return update_schedule_service(schedule, dto, db)
+
+
+@schedule_router.delete("/{schedule_id}", response_model=BaseResponseDTO[None])
+def delete_schedule_route(schedule_id: int, db: Session = Depends(get_db)):
+    return delete_schedule_service(schedule_id, db)
