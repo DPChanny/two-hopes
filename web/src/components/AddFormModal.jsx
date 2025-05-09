@@ -12,6 +12,7 @@ const AddFormModal = ({
   onGroupAdded,
   onCropAdded,
   onSensorAdded,
+  onPostAdded, // ✅ [추가] 게시글 추가 콜백
   groupId,
   cropId, // 센서 추가에 필요
 }) => {
@@ -21,6 +22,9 @@ const AddFormModal = ({
   const [cropType, setCropType] = useState(null);
   const [sensorName, setSensorName] = useState("");
   const [sensorType, setSensorType] = useState(null);
+  const [postContent, setPostContent] = useState(""); // ✅ [추가] 게시글 내용
+  const [imageUrl, setImageUrl] = useState(""); // ✅ [추가] 게시글 이미지 URL
+  const [author, setAuthor] = useState("익명"); // ✅ 새로 추가
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,6 +59,17 @@ const AddFormModal = ({
         console.log("📡 센서 추가 성공:", res.data);
         if (onSensorAdded) onSensorAdded();
         onClose();
+      } else if (type === "post") {
+        // ✅ [추가] 게시글 작성 처리
+        const payload = {
+          crop_id: cropId,
+          content: postContent,
+          image_url: imageUrl,
+          author: author,
+        };
+        const res = await api.post("/api/post/", payload);
+        if (onPostAdded) onPostAdded(res.data.data); // 부모에게 새 게시글 전달
+        onClose();
       }
     } catch (error) {
       console.error("추가 실패:", error);
@@ -72,7 +87,9 @@ const AddFormModal = ({
               ? "그룹 추가"
               : type === "crop"
               ? "작물 추가"
-              : "센서 추가"
+              : type === "sensor"
+              ? "센서 추가"
+              : "게시글 작성" // ✅ [추가] post용 제목
           }
           onSubmit={handleSubmit}
           buttonLabel="추가"
@@ -120,6 +137,28 @@ const AddFormModal = ({
                 placeholder="센서 타입"
                 value={sensorType}
                 onChange={(selectedOption) => setSensorType(selectedOption)}
+              />
+            </>
+          )}
+          {type === "post" && (
+            <>
+              <input
+                type="text"
+                placeholder="작성자 이름"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="이미지 URL"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="게시글 내용"
+                value={postContent}
+                onChange={(e) => setPostContent(e.target.value)}
               />
             </>
           )}
