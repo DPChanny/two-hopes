@@ -37,6 +37,8 @@ Base = declarative_base()
 
 def init_engine():
     global engine, SessionLocal
+
+    logger.info(MYSQL_URL)
     engine = get_engine()
     SessionLocal = sessionmaker(
         bind=engine, autocommit=False, autoflush=False, future=True

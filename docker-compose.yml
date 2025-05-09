@@ -6,19 +6,17 @@ services:
     healthcheck:
       test:
         [
-          "CMD",
-          "mysql",
-          "-h",
-          "localhost",
-          "-u",
-          "${MYSQL_USER}",
-          "-p${MYSQL_PASSWORD}",
-          "-e",
-          "SELECT 1",
+          "CMD-SHELL",
+          "mysqladmin ping -h 127.0.0.1 -u$MYSQL_USER -p$MYSQL_PASSWORD",
         ]
       interval: 5s
       timeout: 3s
       retries: 20
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
       - "${MYSQL_PORT}:${MYSQL_PORT}"
     env_file:
@@ -43,16 +41,17 @@ services:
     env_file:
       - .env
 
-  react:
+  web:
     build:
-      context: ./frontend
+      context: ./web
       dockerfile: Dockerfile
-    container_name: react-app
+    container_name: web
     restart: unless-stopped
     ports:
-      - "${REACT_PORT}:${REACT_PORT}"
+      - "${WEB_PORT}:${WEB_PORT}"
     volumes:
-      - ./frontend:/app
+      - ./web:/web
+      - /web/node_modules
     command: npm start
     env_file:
       - .env

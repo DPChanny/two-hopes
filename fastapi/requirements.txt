@@ -7,3 +7,7 @@ pymysql
 python-dotenv
 
 tenacity
+
+boto3
+
+openai
