@@ -18,6 +18,17 @@ const GroupDetail = () => {
   const [error, setError] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
 
+  const fetchCrops = async () => {
+    try {
+      const res = await api.get("/api/crop/", {
+        params: { group_id: groupId },
+      });
+      setCrops(res.data.data);
+    } catch (err) {
+      console.error("작물 정보를 불러오지 못했습니다.", err);
+    }
+  };
+
   useEffect(() => {
     const fetchGroup = async () => {
       try {
@@ -34,17 +45,6 @@ const GroupDetail = () => {
       } catch (err) {
         setError("그룹 정보를 불러오지 못했습니다.");
         console.error(err);
-      }
-    };
-
-    const fetchCrops = async () => {
-      try {
-        const res = await api.get("/api/crop/", {
-          params: { group_id: groupId },
-        });
-        setCrops(res.data.data);
-      } catch (err) {
-        console.error("작물 정보를 불러오지 못했습니다.", err);
       }
     };
 
@@ -72,7 +72,7 @@ const GroupDetail = () => {
       <div className="crop-container">
         {crops.map((crop) => (
           <div
-            key={crop.id}
+            key={crop.crop_id}
             className="crop-card"
             onClick={() => navigate(`/crop/${crop.crop_id}`)}
           >
@@ -88,7 +88,12 @@ const GroupDetail = () => {
       </div>
       <AddBtn onClick={() => setShowAddModal(true)} />
       {showAddModal && (
-        <AddFormModal type="crop" onClose={() => setShowAddModal(false)} />
+        <AddFormModal
+          type="crop"
+          groupId={groupId}
+          onCropAdded={fetchCrops}
+          onClose={() => setShowAddModal(false)}
+        />
       )}
     </div>
   );

@@ -1,35 +1,96 @@
-.reservation {
-  max-width: 400px;
-  margin: auto;
+/* Scheduler.css */
+
+.scheduler {
+  display: flex;
+  position: relative;
+  border: 1px solid #ccc;
+  user-select: none;
   font-family: sans-serif;
 }
 
-.section {
-  margin-top: 20px;
+.time-column {
+  width: 60px;
+  border-right: 1px solid #ccc;
+  background-color: #f9f9f9;
+  position: relative;
+  z-index: 1;
 }
 
-.time-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.time-label {
+  height: 25px;
+  line-height: 25px;
+  font-size: 12px;
+  text-align: right;
+  padding-right: 5px;
+  border-bottom: 1px solid #eee;
 }
 
-.time-btn {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+.day-column {
+  flex: 1;
+  position: relative;
+  border-right: 1px solid #eee;
   background-color: #fff;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  z-index: 0;
 }
 
-.time-btn.selected {
-  background-color: #c8e6c9;
-  border-color: #66bb6a;
+.day-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  font-weight: bold;
+  background-color: #f0f0f0;
+  z-index: 2;
+  border-bottom: 1px solid #ccc;
 }
 
-.time-btn.disabled {
+.hour-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
   background-color: #eee;
-  color: #aaa;
-  cursor: not-allowed;
+  z-index: 0;
+}
+
+.schedule-block {
+  position: absolute;
+  left: 5%;
+  width: 90%;
+  background-color: #007acc;
+  color: white;
+  font-size: 12px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding: 2px 4px;
+  z-index: 3;
+  cursor: move;
+  overflow: hidden;
+}
+
+.resize-handle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: ns-resize;
+  z-index: 4;
+}
+
+.schedule-block:hover .resize-handle {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.drag-preview {
+  position: absolute;
+  left: 5%;
+  width: 90%;
+  background-color: rgba(0, 122, 204, 0.3);
+  border: 1px dashed #007acc;
+  z-index: 2;
 }

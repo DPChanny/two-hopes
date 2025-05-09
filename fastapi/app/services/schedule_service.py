@@ -100,14 +100,13 @@ def update_schedule_service(
         if not schedule:
             raise CustomException(404, "Schedule not found.")
 
-        new_crop_id = dto.crop_id or schedule.crop_id
         new_weekday = dto.weekday or schedule.weekday
         new_start_time = dto.start_time or schedule.start_time
         new_end_time = dto.end_time or schedule.end_time
 
         if is_schedule_overlapping(
             db,
-            new_crop_id,
+            schedule.crop_id,
             new_weekday,
             new_start_time,
             new_end_time,
