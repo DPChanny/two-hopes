@@ -89,9 +89,14 @@ const CropDetail = () => {
       <div className="crop-detail-header">
         <h2>{groupName}</h2>
         <div className="crop-detail-location">
-          <BiMap size={35} />
+          <BiMap size={20} />
           <p>{groupLocation}</p>
         </div>
+      </div>
+      <div className="crop-detail-divider"></div>
+      <div className="crop-detail-title">
+        <h2>{name}</h2>
+        <p>{harvest ? "수확 완료" : "미수확"}</p>
       </div>
       <div className="crop-detail-content">
         <div className="crop-status-section">
@@ -102,38 +107,40 @@ const CropDetail = () => {
               value={`${sensor.value} ${unitMap[sensor.sensor_type] || ""}`}
             />
           ))}
+          <AddBtn onClick={() => setShowAddModal(true)} />
+          {showAddModal && (
+            <AddFormModal
+              type="sensor"
+              cropId={cropId}
+              onSensorAdded={fetchSensors}
+              onClose={() => setShowAddModal(false)}
+            />
+          )}
         </div>
-        <AddBtn onClick={() => setShowAddModal(true)} />
-        {showAddModal && (
-          <AddFormModal
-            type="sensor"
-            cropId={cropId}
-            onSensorAdded={fetchSensors}
-            onClose={() => setShowAddModal(false)}
-          />
-        )}
-        <div className="crop-posts">
-          {posts.map((post) => (
-            <div key={post.post_id} className="crop-post-card">
-              <div className="crop-post-author">
-                <FaUserCircle size={36} />
-                <p>{post.author || "익명"}</p>
+        <div className="crop-posts-section">
+          <div className="crop-posts">
+            {posts.map((post) => (
+              <div key={post.post_id} className="crop-post-card">
+                <div className="crop-post-author">
+                  <FaUserCircle size={36} />
+                  <p>{post.author || "익명"}</p>
+                </div>
+                <img
+                  src={post.image_url}
+                  alt="작물 이미지"
+                  className="crop-post-img"
+                />
+                <p>{post.content}</p>
+                <div className="crop-post-bottom">
+                  <BsHeart size={32} className="crop-post-icon" />
+                </div>
               </div>
-              <img
-                src={post.image_url}
-                alt="작물 이미지"
-                className="crop-post-img"
-              />
-              <p>{post.content}</p>
-              <div className="crop-post-bottom">
-                <BsHeart size={32} className="crop-post-icon" />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="crop-reserve-section">
-        <Scheduler schedules={schedules} />
+        <div className="crop-reserve-section">
+          <Scheduler schedules={schedules} />
+        </div>
       </div>
     </div>
   );
