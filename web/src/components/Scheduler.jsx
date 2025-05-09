@@ -33,10 +33,9 @@ function toTimeString(m) {
     m % 60
   ).padStart(2, "0")}`;
 }
-
 function generateTimeLabels() {
   const times = [];
-  for (let h = START_HOUR; h <= END_HOUR; h++) {
+  for (let h = START_HOUR; h < END_HOUR; h++) {
     times.push(`${String(h).padStart(2, "0")}:00`);
   }
   return times;
