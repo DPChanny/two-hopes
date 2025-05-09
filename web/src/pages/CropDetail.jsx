@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BiMap } from "react-icons/bi";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { FaUserCircle } from "react-icons/fa";
 import Scheduler from "../components/Scheduler";
 import StatusCard from "../components/StatusCard";
 import api from "../axiosConfig.js";
@@ -13,6 +14,7 @@ const CropDetail = () => {
   const [crop, setCrop] = useState(null);
   const [error, setError] = useState("");
   const [groupLocation, setGroupLocation] = useState("");
+  const [groupName, setGroupName] = useState("");
   const [sensors, setSensors] = useState([]);
   const statusItems = [
     { label: "온도", type: "temperature" },
@@ -35,8 +37,10 @@ const CropDetail = () => {
 
         if (matchedGroup) {
           setGroupLocation(matchedGroup.location);
+          setGroupName(matchedGroup.name);
         } else {
           setGroupLocation("위치 정보 없음");
+          setGroupName("그룹 정보 없음");
         }
       } catch (err) {
         console.error("작물 또는 그룹 정보 조회 실패:", err);
@@ -85,48 +89,52 @@ const CropDetail = () => {
 
   return (
     <div className="crop-detail">
-      <div className="crop-status-section">
-        {statusItems.map((item) => (
-          <StatusCard
-            key={item.type}
-            label={item.label}
-            value={getSensorValue(item.type)}
-          />
-        ))}
+      <div className="crop-detail-header">
+        <h2>{groupName}</h2>
+        <div className="crop-detail-location">
+          <BiMap size={35} />
+          <p>{groupLocation}</p>
+        </div>
       </div>
-      <div className="crop-detail-group">
-        <p>{name}</p>
-        <BiMap />
-        <p>{groupLocation}</p>
-      </div>
-      <hr />
-      <div className="crop-detail-title">
-        <h2>{name}</h2>
-        <p>{harvest ? "수확 완료" : "미수확"}</p>
-      </div>
-
-      <div className="crop-posts-section">
-        {posts.map((post) => (
-          <div key={post.post_id} className="crop-post-card">
-            <p>👤 {post.author || "익명"}</p>
-            <img
-              src={post.image_url}
-              alt="작물 이미지"
-              style={{
-                width: "100%",
-                maxWidth: "300px",
-                height: "auto",
-                borderRadius: "10px",
-              }}
+      <div className="crop-detail-content">
+        <div className="crop-status-section">
+          {statusItems.map((item) => (
+            <StatusCard
+              key={item.type}
+              label={item.label}
+              value={getSensorValue(item.type)}
             />
-            <p>{post.content}</p>
-            <div>{post.liked ? <BsHeartFill /> : <BsHeart />}</div>
+          ))}
+        </div>
+        <div className="crop-posts-section">
+          <div className="crop-detail-title">
+            <h2>{name}</h2>
+            <p>{harvest ? "수확 완료" : "미수확"}</p>
           </div>
-        ))}
-      </div>
-      <div className="crop-reserve-section">
-        예약하기
-        <Scheduler schedules={schedules} />
+          <div className="crop-posts">
+            {posts.map((post) => (
+              <div key={post.post_id} className="crop-post-card">
+                <div className="crop-post-author">
+                  <FaUserCircle size={36} />
+                  <p>{post.author || "익명"}</p>
+                </div>
+                <img
+                  src={post.image_url}
+                  alt="작물 이미지"
+                  className="crop-post-img"
+                />
+                <p>{post.content}</p>
+                <div className="crop-post-bottom">
+                  <BsHeart size={32} className="crop-post-icon" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="crop-reserve-section">
+          예약하기
+          <Scheduler schedules={schedules} />
+        </div>
       </div>
     </div>
   );

@@ -1,60 +1,121 @@
-.crop-detail-layout {
-  display: flex;
-  gap: 2rem;
-  padding: 2rem;
-  align-items: flex-start;
-}
-
-/* 왼쪽: 센서 카드 묶음 */
-.crop-status-section {
-  width: 300px;
-  height: 64px;
-  border-radius: 10px;
-  background: linear-gradient(
-    180deg,
-    #a4bf7d 0%,
-    rgba(164, 191, 125, 0.8) 100%
-  );
-  border: 10px solid transparent;
-
-  border-radius: 10px;
-  display: flex;
-  box-sizing: border-box;
-}
-
-/* 가운데: 그룹 정보 + 포스트 */
-.crop-main-section {
-  flex: 1;
-  max-width: 700px;
+.crop-detail {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* 오른쪽: 스케줄러 */
-.crop-scheduler-section {
-  width: 250px;
-  background-color: #f4f4f4;
-  padding: 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-}
-
-.status-card {
-  width: 300px;
-  height: 64px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
+}
+
+.crop-detail-header {
+  height: 196px;
+}
+
+.crop-detail-header h2 {
+  color: #476a11;
+  font-size: 48px;
+  font-weight: 700;
+  margin: 42px 0 24px 0;
+}
+
+.crop-detail-location {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.crop-detail-location p {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.crop-detail-content {
+  display: flex;
+  justify-content: center;
+}
+
+.crop-status-section {
+  width: 300px;
+}
+
+.crop-posts-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 674px;
+  margin: 0 28px;
+}
+
+.crop-detail-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.crop-detail-title h2 {
+  font-size: 64px;
+  font-weight: 700;
+  margin: 0 0 9px 0;
+}
+
+.crop-detail-title p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 95px;
+  height: 33px;
+  border-radius: 30px;
+  background: rgba(71, 106, 17, 0.8);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.crop-posts {
+  margin: 60px 28px;
+}
+
+.crop-post-card {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  width: 674px;
+  padding: 32px;
+  border-radius: 20px;
   background: linear-gradient(
     180deg,
-    #a4bf7d 0%,
-    rgba(164, 191, 125, 0.8) 100%
+    #d6e2c5 0%,
+    rgba(214, 226, 197, 0.4) 100%
   );
-  color: #333;
-  font-weight: 500;
-  font-size: 16px;
+}
+
+.crop-post-author {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.crop-post-author p {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.crop-post-img {
+  margin: 15px 0;
+  border-radius: 15px;
+  max-height: 500px;
+  object-fit: cover;
+}
+
+.crop-post-card p {
+  margin: 0;
+  font-size: 24px;
+}
+
+.crop-post-bottom {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 5px;
 }
