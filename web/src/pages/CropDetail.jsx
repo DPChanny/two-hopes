@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-//import { groups, cropPosts } from "../data/dummyData";
 import { BiMap } from "react-icons/bi";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import Scheduler from "../components/Scheduler";
 import StatusCard from "../components/StatusCard";
 import api from "../axiosConfig.js";
+import AddBtn from "../components/AddBtn";
 
 const CropDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  //const cropId = parseInt(id);
-  //const posts = cropPosts.filter((post) => post.cropId === cropId);
   const [crop, setCrop] = useState(null);
   const [error, setError] = useState("");
   const [groupLocation, setGroupLocation] = useState("");
   const [sensors, setSensors] = useState([]);
-  const statusItems = [
-    { label: "온도", type: "temperature" },
-    { label: "습도", type: "humidity" },
-    { label: "일조량", type: "light" },
-  ];
+
+  const unitMap = {
+    temperature: "°C",
+    humidity: "%RH",
+    light: "Lux",
+    water: "%",
+  };
 
   useEffect(() => {
     const fetchCropAndGroup = async () => {
@@ -29,7 +29,6 @@ const CropDetail = () => {
         const cropData = res.data.data;
         setCrop(cropData);
 
-        // 그룹 정보 요청
         const groupRes = await api.get("/api/group/");
         const matchedGroup = groupRes.data.data.find(
           (group) => group.group_id === cropData.group_id
@@ -61,10 +60,9 @@ const CropDetail = () => {
       }
     };
 
-    fetchSensors(); // 최초 1회 실행
-
-    const interval = setInterval(fetchSensors, 1000); // 10초마다 호출
-    return () => clearInterval(interval); // 언마운트 시 정리
+    fetchSensors();
+    const interval = setInterval(fetchSensors, 1000);
+    return () => clearInterval(interval);
   }, [id]);
 
   if (error) {
@@ -78,12 +76,7 @@ const CropDetail = () => {
 
   if (!crop) return <p>로딩 중...</p>;
 
-  const { name, harvest, crop_type, posts, schedules } = crop;
-
-  const getSensorValue = (type) => {
-    const sensor = sensors.find((s) => s.sensor_type === type);
-    return sensor ? sensor.value : "정보 없음";
-  };
+  const { name, harvest, posts, schedules } = crop;
 
   return (
     <div className="crop-detail">
@@ -98,14 +91,15 @@ const CropDetail = () => {
         <p>{harvest ? "수확 완료" : "미수확"}</p>
       </div>
       <div className="crop-status-section">
-        {statusItems.map((item) => (
+        {sensors.map((sensor) => (
           <StatusCard
-            key={item.type}
-            label={item.label}
-            value={getSensorValue(item.type)}
+            key={sensor.sensor_id}
+            label={sensor.name}
+            value={`${sensor.value} ${unitMap[sensor.sensor_type] || ""}`}
           />
         ))}
       </div>
+      <AddBtn />
       <div className="crop-posts-section">
         {posts.map((post) => (
           <div key={post.post_id} className="crop-post-card">
@@ -120,7 +114,6 @@ const CropDetail = () => {
                 borderRadius: "10px",
               }}
             />
-
             <p>{post.content}</p>
             <div>{post.liked ? <BsHeartFill /> : <BsHeart />}</div>
           </div>
@@ -135,45 +128,3 @@ const CropDetail = () => {
 };
 
 export default CropDetail;
-
-/*useEffect(() => {
-      const fetchCrop = async () => {
-        try {
-          const res = await api.get(`/api/crop/${id}`);
-          setCrop(res.data.data);
-        } catch (err) {
-          console.error("작물 상세 조회 실패:", err);
-          setError("존재하지 않는 페이지입니다.");
-        }
-      };
-  
-      fetchCrop();
-    }, [id]);
-
-    useEffect(() => {
-      const fetchCrop = async () => {
-        try {
-          const res = await api.get(`/api/crop/${id}`);
-          const cropData = res.data.data;
-          setCrop(cropData);
-    
-          // 그룹 정보 요청
-          const groupRes = await api.get("/api/group/");
-          const matchedGroup = groupRes.data.data.find(
-            (group) => group.group_id === cropData.group_id
-          );
-    
-          if (matchedGroup) {
-            setGroupLocation(matchedGroup.location);
-          } else {
-            setGroupLocation("위치 정보 없음");
-          }
-    
-        } catch (err) {
-          console.error("작물 상세 조회 실패:", err);
-          setError("존재하지 않는 페이지입니다.");
-        }
-      };
-    
-      fetchCrop();
-    }, [id]);*/
