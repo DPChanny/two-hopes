@@ -14,6 +14,25 @@ from dtos.base_dto import BaseResponseDTO
 from exception import CustomException, handle_exception
 
 
+def is_schedule_overlapping(
+    db: Session,
+    crop_id: int,
+    weekday: str,
+    start_time,
+    end_time,
+    schedule_id: int = None,
+) -> bool:
+    query = db.query(Schedule).filter(
+        Schedule.crop_id == crop_id,
+        Schedule.weekday == weekday,
+        Schedule.start_time < end_time,
+        Schedule.end_time > start_time,
+    )
+    if schedule_id:
+        query = query.filter(Schedule.schedule_id != schedule_id)
+    return query.first() is not None
+
+
 def get_schedule_detail_service(
     schedule_id: int, db: Session
 ) -> GetScheduleDetailResponseDTO:
@@ -45,6 +64,14 @@ def add_schedule_service(
         if not crop:
             raise CustomException(404, "Crop not found.")
 
+        if is_schedule_overlapping(
+            db, dto.crop_id, dto.weekday, dto.start_time, dto.end_time
+        ):
+            raise CustomException(
+                400,
+                "Schedule conflict: Another schedule exists for the same crop on the same weekday.",
+            )
+
         schedule = Schedule(
             weekday=dto.weekday,
             crop_id=dto.crop_id,
@@ -72,6 +99,24 @@ def update_schedule_service(
         )
         if not schedule:
             raise CustomException(404, "Schedule not found.")
+
+        new_crop_id = dto.crop_id or schedule.crop_id
+        new_weekday = dto.weekday or schedule.weekday
+        new_start_time = dto.start_time or schedule.start_time
+        new_end_time = dto.end_time or schedule.end_time
+
+        if is_schedule_overlapping(
+            db,
+            new_crop_id,
+            new_weekday,
+            new_start_time,
+            new_end_time,
+            schedule_id,
+        ):
+            raise CustomException(
+                400,
+                "Schedule conflict: Another schedule exists for the same crop on the same weekday.",
+            )
 
         for key, value in dto.model_dump(exclude_unset=True).items():
             setattr(schedule, key, value)

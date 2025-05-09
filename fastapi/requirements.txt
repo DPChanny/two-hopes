@@ -7,3 +7,5 @@ pymysql
 python-dotenv
 
 tenacity
+
+boto3

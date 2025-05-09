@@ -30,6 +30,10 @@ class Crop(Base, TimeMixin):
 
     group = relationship("Group", back_populates="crops")
 
-    posts = relationship("Post", back_populates="crop")
-    schedules = relationship("Schedule", back_populates="crop")
-    sensors = relationship("Sensor", back_populates="crop")
+    posts = relationship("Post", back_populates="crop", passive_deletes=True)
+    schedules = relationship(
+        "Schedule", back_populates="crop", passive_deletes=True
+    )
+    sensors = relationship(
+        "Sensor", back_populates="crop", passive_deletes=True
+    )

@@ -17,4 +17,7 @@ class Post(Base, TimeMixin):
     author = Column(String(256), nullable=False)
 
     crop = relationship("Crop", back_populates="posts")
-    comments = relationship("Comment", back_populates="post")
+
+    comments = relationship(
+        "Comment", back_populates="post", passive_deletes=True
+    )

@@ -11,6 +11,7 @@ from dtos.crop_dto import (
     UpdateCropRequestDTO,
 )
 from entities.crop import Crop
+from entities.group import Group
 from exception import CustomException, handle_exception
 from dtos.base_dto import BaseResponseDTO
 
@@ -48,6 +49,10 @@ def add_crop_service(
     dto: AddCropRequestDTO, db: Session
 ) -> GetCropDetailResponseDTO:
     try:
+        group = db.query(Group).filter(Group.group_id == dto.group_id).first()
+        if not group:
+            raise CustomException(404, "Group not found.")
+
         crop = Crop(
             group_id=dto.group_id, name=dto.name, crop_type=dto.crop_type
         )

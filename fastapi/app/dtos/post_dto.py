@@ -22,11 +22,11 @@ class PostDetailDTO(PostDTO, TimeMixin):
 class AddPostRequestDTO(BaseModel):
     crop_id: int
     content: str
+    author: str
 
 
 class UpdatePostRequestDTO(BaseModel):
     content: Optional[str] = None
-    image_url: Optional[str] = None
     author: Optional[str] = None
 
 

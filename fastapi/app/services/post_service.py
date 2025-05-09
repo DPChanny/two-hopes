@@ -1,3 +1,4 @@
+from uuid import uuid4
 from sqlalchemy.orm import Session, joinedload
 from entities.post import Post
 from entities.crop import Crop
@@ -12,6 +13,7 @@ from dtos.post_dto import (
     PostDTO,
     PostDetailDTO,
 )
+from sc3 import get_presigned_url
 
 
 def get_post_detail_service(
@@ -20,7 +22,7 @@ def get_post_detail_service(
     try:
         post = (
             db.query(Post)
-            .options(joinedload(Post.comments))  # 댓글 포함
+            .options(joinedload(Post.comments))
             .filter(Post.post_id == post_id)
             .first()
         )
@@ -46,7 +48,12 @@ def add_post_service(
         if not crop:
             raise CustomException(404, "Crop not found.")
 
-        post = Post(crop_id=dto.crop_id, title=dto.title, content=dto.content)
+        post = Post(
+            crop_id=dto.crop_id,
+            content=dto.content,
+            author=dto.author,
+            image_url=get_presigned_url(f"posts/{uuid4().hex}.jpg"),
+        )
         db.add(post)
         db.commit()
 

@@ -11,4 +11,4 @@ class Group(Base, TimeMixin):
     name = Column(String(256), nullable=False)
     location = Column(String(256), nullable=False)
 
-    crops = relationship("Crop", back_populates="group")
+    crops = relationship("Crop", back_populates="group", passive_deletes=True)

@@ -37,6 +37,10 @@ def add_sensor_service(
     dto: AddSensorRequestDTO, db: Session
 ) -> GetSensorDetailResponseDTO:
     try:
+        crop = db.query(Crop).filter(Crop.crop_id == dto.crop_id).first()
+        if not crop:
+            raise CustomException(404, "Crop not found.")
+
         sensor = Sensor(
             crop_id=dto.crop_id,
             name=dto.name,
