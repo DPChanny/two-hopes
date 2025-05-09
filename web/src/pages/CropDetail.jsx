@@ -25,7 +25,7 @@ const CropDetail = () => {
     temperature: "°C",
     humidity: "%RH",
     light: "Lux",
-    water: "%",
+    water: "",
   };
 
   useEffect(() => {
@@ -104,7 +104,7 @@ const CropDetail = () => {
             <StatusCard
               key={sensor.sensor_id}
               label={sensor.name}
-              value={`${sensor.value} ${unitMap[sensor.sensor_type] || ""}`}
+              value={`${sensor.value}${unitMap[sensor.sensor_type] || ""}`}
             />
           ))}
           <AddBtn onClick={() => setShowAddModal(true)} />
