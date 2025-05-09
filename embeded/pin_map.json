@@ -1,0 +1,10 @@
+[
+  {
+    "pin": "A0",
+    "sensor_id": 1
+  },
+  {
+    "pin": "A1",
+    "sensor_id": 2
+  }
+]
