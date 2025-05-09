@@ -7,6 +7,7 @@ import StatusCard from "../components/StatusCard";
 import api from "../axiosConfig.js";
 import "../styles/CropDetail.css";
 import AddBtn from "../components/AddBtn";
+import AddFormModal from "../components/AddFormModal.jsx";
 
 const CropDetail = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const CropDetail = () => {
   const [error, setError] = useState("");
   const [groupLocation, setGroupLocation] = useState("");
   const [sensors, setSensors] = useState([]);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const unitMap = {
     temperature: "°C",
@@ -100,7 +102,10 @@ const CropDetail = () => {
           />
         ))}
       </div>
-      <AddBtn />
+      <AddBtn onClick={() => setShowAddModal(true)} />
+      {showAddModal && (
+        <AddFormModal type="sensor" onClose={() => setShowAddModal(false)} />
+      )}
       <div className="crop-posts-section">
         {posts.map((post) => (
           <div key={post.post_id} className="crop-post-card">
