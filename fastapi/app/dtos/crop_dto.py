@@ -11,6 +11,7 @@ CropTypeLiteral = Literal["vegetable", "fruit", "grain", "herb", "flower"]
 class CropDTO(BaseModel):
     crop_id: int
     group_id: int
+
     name: str
     crop_type: CropTypeLiteral
     harvest: bool

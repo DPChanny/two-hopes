@@ -9,6 +9,7 @@ SensorTypeLiteral = Literal["temperature", "humidity", "light", "ph", "co2"]
 class SensorDTO(BaseModel):
     sensor_id: int
     crop_id: int
+
     value: str
     name: str
     sensor_type: SensorTypeLiteral

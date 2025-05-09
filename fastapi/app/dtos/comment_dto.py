@@ -6,6 +6,7 @@ from dtos.base_dto import BaseResponseDTO, TimeMixin
 class CommentDTO(BaseModel):
     comment_id: int
     post_id: int
+
     content: str
     author: str
 

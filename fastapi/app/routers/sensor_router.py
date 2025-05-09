@@ -5,7 +5,7 @@ from dtos.sensor_dto import (
     AddSensorRequestDTO,
     GetSensorListRequestDTO,
     GetSensorListResponseDTO,
-    SensorDTO,
+    GetSensorDetailResponseDTO,
     UpdateSensorRequestDTO,
 )
 from dtos.base_dto import BaseResponseDTO
@@ -13,13 +13,14 @@ from services.sensor_service import (
     add_sensor_service,
     delete_sensor_service,
     get_sensor_list_service,
+    get_sensor_detail_service,
     update_sensor_service,
 )
 
 sensor_router = APIRouter()
 
 
-@sensor_router.post("/", response_model=BaseResponseDTO[SensorDTO])
+@sensor_router.post("/", response_model=GetSensorDetailResponseDTO)
 def add_sensor_route(dto: AddSensorRequestDTO, db: Session = Depends(get_db)):
     return add_sensor_service(dto, db)
 
@@ -35,7 +36,12 @@ def get_sensor_list_route(
     )
 
 
-@sensor_router.patch("/{sensor_id}", response_model=BaseResponseDTO[SensorDTO])
+@sensor_router.get("/{sensor_id}", response_model=GetSensorDetailResponseDTO)
+def get_sensor_detail_route(sensor_id: int, db: Session = Depends(get_db)):
+    return get_sensor_detail_service(sensor_id, db)
+
+
+@sensor_router.patch("/{sensor_id}", response_model=GetSensorDetailResponseDTO)
 def update_sensor_route(
     sensor_id: int, dto: UpdateSensorRequestDTO, db: Session = Depends(get_db)
 ):

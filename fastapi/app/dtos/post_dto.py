@@ -7,7 +7,10 @@ from dtos.comment_dto import CommentDTO
 class PostDTO(BaseModel):
     post_id: int
     crop_id: int
+
     content: str
+    image_url: str
+    author: str
 
     model_config = {"from_attributes": True}
 
@@ -22,8 +25,9 @@ class AddPostRequestDTO(BaseModel):
 
 
 class UpdatePostRequestDTO(BaseModel):
-    title: Optional[str] = None
     content: Optional[str] = None
+    image_url: Optional[str] = None
+    author: Optional[str] = None
 
 
 class GetPostListRequestDTO(BaseModel):

@@ -6,6 +6,7 @@ from dtos.crop_dto import CropDetailDTO
 
 class GroupDTO(BaseModel):
     group_id: int
+
     name: str
     location: str
 

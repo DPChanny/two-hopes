@@ -9,6 +9,7 @@ WeekdayLiteral = Literal["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 class ScheduleDTO(BaseModel):
     schedule_id: int
     crop_id: int
+
     weekday: WeekdayLiteral
     start_time: time
     end_time: time

@@ -4,13 +4,14 @@ from database import get_db
 from dtos.base_dto import BaseResponseDTO
 from dtos.comment_dto import (
     AddCommentRequestDTO,
+    GetCommentDetailResponseDTO,
     GetCommentListRequestDTO,
     GetCommentListResponseDTO,
     UpdateCommentRequestDTO,
-    CommentDTO,
 )
 from services.comment_service import (
     add_comment_service,
+    get_comment_detail_service,
     get_comment_list_service,
     update_comment_service,
     delete_comment_service,
@@ -19,7 +20,7 @@ from services.comment_service import (
 comment_router = APIRouter()
 
 
-@comment_router.post("/", response_model=BaseResponseDTO[CommentDTO])
+@comment_router.post("/", response_model=GetCommentDetailResponseDTO)
 def add_comment_route(dto: AddCommentRequestDTO, db: Session = Depends(get_db)):
     return add_comment_service(dto, db)
 
@@ -33,8 +34,13 @@ def get_comment_list_route(
     )
 
 
+@comment_router.get("/{comment_id}", response_model=GetCommentDetailResponseDTO)
+def get_comment_detail_route(comment_id: int, db: Session = Depends(get_db)):
+    return get_comment_detail_service(comment_id, db)
+
+
 @comment_router.patch(
-    "/{comment_id}", response_model=BaseResponseDTO[CommentDTO]
+    "/{comment_id}", response_model=GetCommentDetailResponseDTO
 )
 def update_comment_route(
     comment_id: int, dto: UpdateCommentRequestDTO, db: Session = Depends(get_db)

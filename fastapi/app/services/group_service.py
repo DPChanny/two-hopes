@@ -70,8 +70,8 @@ def get_group_list_service(
         if dto.location:
             query = query.filter(Group.location.contains(dto.location))
 
-        group_list = query.all()
-        group_dtos = [GroupDTO.model_validate(g) for g in group_list]
+        group_entities = query.all()
+        group_dtos = [GroupDTO.model_validate(g) for g in group_entities]
 
         return GetGroupListResponseDTO(
             success=True,

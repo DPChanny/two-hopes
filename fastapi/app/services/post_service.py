@@ -66,8 +66,8 @@ def get_post_list_service(
         if dto.crop_id:
             query = query.filter(Post.crop_id == dto.crop_id)
 
-        posts = query.all()
-        post_dtos = [PostDTO.model_validate(post) for post in posts]
+        post_entities = query.all()
+        post_dtos = [PostDTO.model_validate(post) for post in post_entities]
 
         return GetPostListResponseDTO(
             success=True,
