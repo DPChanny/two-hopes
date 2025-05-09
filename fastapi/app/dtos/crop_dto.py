@@ -1,4 +1,4 @@
-from typing import Literal, Optional, List, get_args
+from typing import Literal, Optional, List
 from pydantic import BaseModel, field_serializer
 from dtos.base_dto import BaseResponseDTO, TimeMixin
 from dtos.schedule_dto import ScheduleDTO

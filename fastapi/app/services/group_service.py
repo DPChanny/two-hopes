@@ -1,6 +1,4 @@
-from pydantic import ValidationError
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy.exc import SQLAlchemyError
 
 from dtos.group_dto import (
     AddGroupRequestDTO,

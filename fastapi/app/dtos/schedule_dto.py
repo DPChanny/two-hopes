@@ -1,6 +1,5 @@
 from datetime import time
-from typing import Optional, List, Literal, get_args
-from enum import Enum
+from typing import Optional, List, Literal
 from pydantic import BaseModel, field_serializer
 from dtos.base_dto import BaseResponseDTO, TimeMixin
 from entities.schedule import Weekday
