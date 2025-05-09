@@ -58,17 +58,18 @@ const Main = () => {
           setLoading(true); // 검색 시 데이터 리로딩 유도
         }}
       />
-<div className="group-container">
-      {groups.map((group) => (
-        <div
-          key={group.group_id}
-          className="group-card"
-          onClick={() => navigate(`/group/${group.group_id}`)}
-        >
-          <h2>{group.name}</h2>
-          <div className="group-location">
-            <BiMap size={35} />
-            <p>{group.location}</p>
+      <div className="group-container">
+        {groups.map((group) => (
+          <div
+            key={group.group_id}
+            className="group-card"
+            onClick={() => navigate(`/group/${group.group_id}`)}
+          >
+            <h2>{group.name}</h2>
+            <div className="group-location">
+              <BiMap size={35} />
+              <p>{group.location}</p>
+            </div>
           </div>
         ))}
       </div>
