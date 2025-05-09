@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-//import { groups } from "../data/dummyData";
 import { BiMap } from "react-icons/bi";
 import api from "../axiosConfig.js";
+import { LuLeaf } from "react-icons/lu";
+import "../styles/GroupDetail.css";
+import AddBtn from "../components/AddBtn";
 
 const GroupDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const groupId = parseInt(id);
-  //const group = groups.find((g) => g.id === groupId);
 
   const [groupName, setGroupName] = useState("");
   const [location, setLocation] = useState("");
   const [crops, setCrops] = useState([]);
   const [error, setError] = useState("");
-
-  //console.log("groupId:", groupId);
-  //console.log("group:", group);
 
   useEffect(() => {
     const fetchGroup = async () => {
@@ -65,21 +63,26 @@ const GroupDetail = () => {
   return (
     <div className="group-detail">
       <h2>{groupName}</h2>
-      <div className="group-location">
-        <BiMap />
+      <div className="group-detail-location">
+        <BiMap size={35} />
         <p>{location}</p>
       </div>
-      {crops.map((crop) => (
+      <div className="crop-container">
+              {crops.map((crop) => (
         <div
           key={crop.id}
           className="crop-card"
           onClick={() => navigate(`/crop/${crop.crop_id}`)}
         >
-          <p>{crop.name}</p>
-          {/*<p>{crop.status}</p>*/}
-          <p>{crop.harvest ? "수확 완료" : "미수확"}</p>
-        </div>
-      ))}
+          <div className="crop-title">
+              <LuLeaf size={35} />
+              <p>{crop.name}</p>
+            </div>
+            <div className="crop-status">{crop.harvest ? "수확 완료" : "미수확"}</div>
+          </div>
+        ))}
+      </div>
+      <AddBtn />
     </div>
   );
 };

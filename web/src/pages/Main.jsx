@@ -4,7 +4,8 @@ import Header from "../components/Header";
 import SearchBar from "../components/SearchBar";
 import { BiMap } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import api from "../axiosConfig.js"; // axios 설정 파일
+import api from "../axiosConfig.js";
+import AddBtn from "../components/AddBtn";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -57,6 +58,7 @@ const Main = () => {
           setLoading(true); // 검색 시 데이터 리로딩 유도
         }}
       />
+<div className="group-container">
       {groups.map((group) => (
         <div
           key={group.group_id}
@@ -65,11 +67,12 @@ const Main = () => {
         >
           <h2>{group.name}</h2>
           <div className="group-location">
-            <BiMap />
+            <BiMap size={35} />
             <p>{group.location}</p>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
+      <AddBtn />
     </div>
   );
 };

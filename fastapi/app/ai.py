@@ -7,7 +7,7 @@ openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 def get_harvest(image_url: str) -> bool:
     response = openai_client.chat.completions.create(
-        model="gpt-4-vision-preview",
+        model="gpt-4o",
         messages=[
             {
                 "role": "system",
@@ -20,7 +20,10 @@ def get_harvest(image_url: str) -> bool:
                         "type": "text",
                         "text": "Is this crop ready to harvest? Answer only 'yes' or 'no'.",
                     },
-                    {"type": "image_url", "image_url": {"url": image_url}},
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": image_url},
+                    },
                 ],
             },
         ],
