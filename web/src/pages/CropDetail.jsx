@@ -22,7 +22,6 @@ const CropDetail = () => {
   const [groupName, setGroupName] = useState("");
   const [sensors, setSensors] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showPostModal, setShowPostModal] = useState(false); // ✅ [추가] 게시글 작성 모달
 
   const unitMap = {
     temperature: "°C",
@@ -74,7 +73,6 @@ const CropDetail = () => {
     return () => clearInterval(interval);
   }, [id]);
 
-  // ✅ [추가] 새 게시글을 crop state에 반영
   const handleNewPost = (newPost) => {
     setCrop((prev) => ({
       ...prev,
@@ -108,7 +106,7 @@ const CropDetail = () => {
       <div className="crop-detail-title">
         <h2>{name}</h2>
         <div className="crop-detail-title-p">
-          <p>{harvest ? "수확 완료" : "미수확"}</p>
+          <p>{harvest ? "수확 필요" : "성장중"}</p>
           <PostSection
             posts={posts}
             cropId={cropId}

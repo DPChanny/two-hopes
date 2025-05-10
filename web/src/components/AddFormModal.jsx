@@ -80,7 +80,7 @@ const AddFormModal = ({
           `/api/post/${res.data.data.post_id}`,
           payload2
         );
-        if (onPostAdded) onPostAdded(res2.data.data); // 부모에게 새 게시글 전달
+        if (onPostAdded) onPostAdded(res2.data.data);
         onClose();
       }
     } catch (error) {
